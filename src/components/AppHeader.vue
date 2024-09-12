@@ -13,9 +13,24 @@
                         label: "Restaurants",
                         name: "restaurants"
                     }
-                ]
-            }
+                ],
+                user: null
+            };
         },
+        /* created(){
+            this.checkAuth();
+        },
+        methods:{
+            checkAuth(){
+                axios.get('http://localhost:8000/api/user',{withCredentials: true})
+                .then(response => {
+                    this.user = response.data;
+                })
+                .catch(error => {
+                    console.error('User not authenticated', error);
+                })
+            }
+        }*/
     }
 </script>
 
@@ -27,6 +42,11 @@
                     <router-link :to="{ name: link.name }">
                         {{ link.label }}
                     </router-link>
+                </li>
+                <li>
+                    <a href="http://localhost:8000/login">
+                        Account
+                    </a>
                 </li>
             </ul>
         </nav>
