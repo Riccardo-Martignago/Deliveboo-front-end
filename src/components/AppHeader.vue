@@ -10,8 +10,17 @@
                         name: "home"
                     },
                     {
+                        label: "About us",
+                        name: "about"
+                    },
+                    {
                         label: "Restaurants",
                         name: "restaurants"
+                    },
+                    
+                    {
+                        label: "Search",
+                        name: "search"
                     }
                 ],
                 user: null
@@ -37,6 +46,11 @@
 <template>
     <header>
         <nav>
+            <div class="logo">
+                <router-link to="/">
+                    Deliveboo
+                </router-link>
+            </div>
             <ul>
                 <li v-for="link in linksName" :key="link.name">
                     <router-link :to="{ name: link.name }">
