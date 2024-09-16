@@ -47,7 +47,11 @@
           })
         },
         getImageUrl(photoPath) {
+          
           return `http://127.0.0.1:8000/uploads/${photoPath}`;
+        },
+        getImageStore(photoPath){
+          return `http://127.0.0.1:8000/storage/${photoPath}`;
         }
       },
       created(){
@@ -84,7 +88,8 @@
           <h3 class="card-title">
             {{ restaurant.name }}
           </h3>
-          <img :src="getImageUrl(restaurant.photo)" alt="Restaurant Photo" class="card-img-top"/>
+          <img v-if="!restaurant.photo.includes('uploads/')" :src="getImageUrl(restaurant.photo)" alt="Restaurant Photo" class="card-img-top"/>
+          <img v-else :src="getImageStore(restaurant.photo)" alt="Restaurant Photo" class="card-img-top"/>
           <p class="typology">
             <span class="fs">Tipologia:</span> {{ restaurant.typologyName }}
           </p>
