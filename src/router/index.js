@@ -3,6 +3,7 @@ import HomeView from '../views/AppHome.vue'
 import RestaurantsView from '../views/AppRestaurants.vue'
 import SearchView from '../views/AppSearch.vue'
 import AboutView from '../views/AppAbout.vue'
+import DishView from '../views/AppDish.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,6 +27,11 @@ const router = createRouter({
       path: '/about',
       name: 'about',
       component: AboutView
+    },
+    {
+      path: '/dish',
+      name: 'dish',
+      component: DishView,
     },
   ]
 })

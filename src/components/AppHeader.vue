@@ -14,14 +14,9 @@
                         name: "about"
                     },
                     {
-                        label: "Restaurants",
-                        name: "restaurants"
+                        label: "Dish",
+                        name: "dish"
                     },
-                    
-                    {
-                        label: "Search",
-                        name: "search"
-                    }
                 ],
                 user: null
             };

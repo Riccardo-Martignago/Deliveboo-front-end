@@ -63,47 +63,45 @@
 
 <template>
   <main>
-      <div class="col-sm-12 d-flex justify-content-center align-items-center">
-        <div class="dropdown" :class="{ active: dropdownActive }">
-          <div class="dropdown-header" @click="toggleDropdown">
-            <span class="dropdown-title">Scegli il tuo ristorante in base alle tue preferenze!</span>
-            <i :class="dropdownActive ? 'arrow-up' : 'arrow-down'"></i>
-          </div>
-          <div class="dropdown-content">
-            <label v-for="typology in typologies" :key="typology.id" class="dropdown-label">
-              <input 
-                type="checkbox" 
-                :value="typology.id" 
-                v-model="selectedTypologies" 
-              />
-              {{ typology.name }}
-            </label>
-          </div>
+    <div class="col-sm-12 d-flex justify-content-center align-items-center">
+      <div class="dropdown" :class="{ active: dropdownActive }">
+        <div class="dropdown-header" @click="toggleDropdown">
+          <span class="dropdown-title">Scegli il tuo ristorante in base alle tue preferenze!</span>
+          <i :class="dropdownActive ? 'arrow-up' : 'arrow-down'"></i>
+        </div>
+        <div class="dropdown-content">
+          <label v-for="typology in typologies" :key="typology.id" class="dropdown-label">
+            <input 
+              type="checkbox" 
+              :value="typology.id" 
+              v-model="selectedTypologies" 
+            />
+            {{ typology.name }}
+          </label>
         </div>
       </div>
+    </div>
 
     <div class="row">
       <div class="col-sm-12 d-flex flex-wrap justify-content-center">
-        <div class="card col-sm-2 pt-3 ps-1 pe-1 pb-3 m-3 border" v-for="restaurant in filteredRestaurants" :key="restaurant.id">
-          <h3 class="card-title">
-            {{ restaurant.name }}
-          </h3>
+        <div class="card col-sm-2 p-1 m-3 border" v-for="restaurant in filteredRestaurants" :key="restaurant.id">
           <img v-if="!restaurant.photo.includes('uploads/')" :src="getImageUrl(restaurant.photo)" alt="Restaurant Photo" class="card-img-top"/>
           <img v-else :src="getImageStore(restaurant.photo)" alt="Restaurant Photo" class="card-img-top"/>
+          <RouterLink :to="{ name: 'dish'}">            
+            <h3 class="card-title">{{ restaurant.name }}</h3>
+          </RouterLink>
           <p class="typology">
             <span class="fs">Tipologia:</span> {{ restaurant.typologyName }}
           </p>
           <p>
-            <span>Indirizzo:</span> {{ restaurant.adress }}
-          </p>
-          <p>
-            <span>Partita Iva:</span> {{ restaurant.piva }}
+            <span>Indirizzo:</span> {{ restaurant.address }}
           </p>
         </div>
       </div>
     </div>
   </main>
 </template>
+
 
 <style>
   .dropdown {
@@ -144,7 +142,6 @@
     display: none;
     background-color: white;
     padding: 10px;
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
 
       .dropdown-label {
         display: flex;
@@ -165,45 +162,38 @@
 
 
   div.card{
-    box-shadow: 5px 5px 5px #757171;
-    border-radius: 20px;
 
     img{
       width: 100%;
       height: 200px;
       margin: 0 auto;
-      padding-top: 1rem;
-      border-radius: 20px;
       }
 
     p.typology{
-      font-size: 20px;
+      font-size: 16px;
       font-weight: bold;
-      padding-top: 1rem;
       }
 
     h3{
       text-transform: capitalize;
-      font-size: 25px;
+      font-size: 20px;
       font-weight: revert;
-      color: rgb(81, 61, 61);
-      text-align: center;
+      padding-top: 1rem;
     }
     
     p{
-      font-size: 20px;
+      font-size: 16px;
       font-weight: revert;
       padding: 0;
       margin: 0;
       
         span{
           font-weight: 600;
-          color: rgb(81, 61, 61);
           padding-right: 0.5rem;
         }
 
     span.fs{
-      font-size: 20px;
+      font-size: 16px;
     }
   }
 }
