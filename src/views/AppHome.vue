@@ -94,7 +94,7 @@
             <span class="fs">Tipologia:</span> {{ restaurant.typologyName }}
           </p>
           <p>
-            <span>Indirizzo:</span> {{ restaurant.address }}
+            <span>Indirizzo:</span> {{ restaurant.adress }}
           </p>
         </div>
       </div>
