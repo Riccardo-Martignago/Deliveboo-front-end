@@ -1,31 +1,66 @@
 <script>
-
-    export default{
-            name: 'Header',
-        data(){
-            return{
-                linksName : [
-                    {
-                        label: "Home",
-                        name: "home"
-                    },
-                    {
-                        label: "About us",
-                        name: "about"
-                    },
-                    {
-                        label: "Restaurants",
-                        name: "restaurants"
-                    },
-                    
-                    {
-                        label: "Search",
-                        name: "search"
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+export default{
+        name: 'Header',
+    data(){
+        return{
+            linksName : [
+                {
+                    label: "Home",
+                    name: "home"
+                },
+                {
+                    label: "About us",
+                    name: "about"
+                },
+                {
+                    label: "Restaurants",
+                    name: "restaurants"
+                },
+                
+                {
+                    label: "Search",
+                    name: "search"
+                },
+            ],
+            user: null
+        };
+    },
+    methods:{
+        async checkAuth(){
+            try{
+                const response = await axios.get('http://127.0.0.1:8000/api/user', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }
-                ],
-                user: null
-            };
-        },
+                });
+
+            const loggedInUserId = localStorage.getItem('userId');
+            if(loggedInUserId){
+                this.user = response.data.data.find(user => user.id === parseInt(loggedInUserId));
+            }else{
+                this.user= null;
+            }
+            } catch (error) {
+                console.error('User not authenticated', error);
+            }
+            },
+        async handleLogout(){
+            try {
+                localStorage.removeItem('token');
+                this.user = null;
+                this.$router.push({ name: 'login' });
+            } catch (error){
+                console.error('Error logging out', error);
+            }
+        }
+    },
+    mounted(){
+        this.checkAuth();
+    }
+};
+
         /* created(){
             this.checkAuth();
         },
@@ -40,7 +75,6 @@
                 })
             }
         }*/
-    }
 </script>
 
 <template>
@@ -57,10 +91,16 @@
                         {{ link.label }}
                     </router-link>
                 </li>
-                <li>
-                    <a href="http://localhost:8000/login">
-                        Account
-                    </a>
+                <li v-if="user">
+                    <span>Welcome, {{ user.name }}</span>
+                </li>
+                <li v-else>
+                    <router-link :to="{ name: 'login' }">
+                        Login
+                    </router-link>
+                </li>
+                <li v-if="user">
+                    <button @click="handleLogout">Logout</button>
                 </li>
             </ul>
         </nav>
