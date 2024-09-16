@@ -4,6 +4,7 @@ import RestaurantsView from '../views/AppRestaurants.vue'
 import SearchView from '../views/AppSearch.vue'
 import AboutView from '../views/AppAbout.vue'
 import AppLogin from '../views/AppLogin.vue'
+import DishView from '../views/AppDish.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -33,7 +34,12 @@ const router = createRouter({
       name: 'login',
       component: AppLogin
     },
+    {
+      path: '/dish',
+      name: 'dish',
+      component: DishView,
+    },
   ]
-})
+});
 
 export default router
