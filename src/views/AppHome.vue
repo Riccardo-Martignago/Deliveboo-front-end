@@ -47,8 +47,16 @@
           })
         },
         getImageUrl(photoPath) {
+          
           return `http://127.0.0.1:8000/uploads/${photoPath}`;
-        }
+        },
+        getImageStore(photoPath){
+          return `http://127.0.0.1:8000/storage/${photoPath}`;
+        },  
+        selectRestaurant(restaurant) {
+        localStorage.setItem('userId', restaurant.id);
+        window.location.href = 'dish';
+      },
       },
       created(){
 
@@ -80,8 +88,9 @@
 
     <div class="row">
       <div class="col-sm-12 d-flex flex-wrap justify-content-center">
-        <div class="card col-sm-2 p-1 m-3 border" v-for="restaurant in filteredRestaurants" :key="restaurant.id">
-          <img :src="getImageUrl(restaurant.photo)" alt="Restaurant Photo" class="card-img-top"/>
+        <div class="card col-sm-2 p-1 m-3 border" @click="selectRestaurant(restaurant)" v-for="restaurant in filteredRestaurants" :key="restaurant.id">
+          <img v-if="!restaurant.photo.includes('uploads/')" :src="getImageUrl(restaurant.photo)" alt="Restaurant Photo" class="card-img-top"/>
+          <img v-else :src="getImageStore(restaurant.photo)" alt="Restaurant Photo" class="card-img-top"/>
           <RouterLink :to="{ name: 'dish'}">            
             <h3 class="card-title">{{ restaurant.name }}</h3>
           </RouterLink>
@@ -89,7 +98,7 @@
             <span class="fs">Tipologia:</span> {{ restaurant.typologyName }}
           </p>
           <p>
-            <span>Indirizzo:</span> {{ restaurant.address }}
+            <span>Indirizzo:</span> {{ restaurant.adress }}
           </p>
         </div>
       </div>
