@@ -54,6 +54,9 @@ export default{
             } catch (error){
                 console.error('Error logging out', error);
             }
+        },
+        goToDashboard(){
+            window.location.href = 'http://127.0.0.1:8000/home';
         }
     },
     mounted(){
@@ -98,6 +101,10 @@ export default{
                     <router-link :to="{ name: 'login' }">
                         Login
                     </router-link>
+                </li>
+                <li v-if="user">
+                    <!-- Bottone per il Dashboard -->
+                    <button @click="goToDashboard">Dashboard</button>
                 </li>
                 <li v-if="user">
                     <button @click="handleLogout">Logout</button>
