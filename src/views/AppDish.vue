@@ -9,14 +9,19 @@ import axios from 'axios';
         },
         methods:{
           getDishes(){
+            this.userId = localStorage.getItem('userId');
 
+            if (!this.userId) {
+              console.error('Restaurant not found');
+              return;
+            }
             axios.get('http://127.0.0.1:8000/api/dishes', {
               params:{
             }
         })
         .then((response) => {
                 console.log(response.data.data);
-                this.dishes = response.data.data;
+                this.dishes = response.data.data.filter((dish) => dish.user_id === parseInt(this.userId));
             })
             .catch(function (error){
                 console.log(error);
