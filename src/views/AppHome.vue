@@ -52,7 +52,11 @@
         },
         getImageStore(photoPath){
           return `http://127.0.0.1:8000/storage/${photoPath}`;
-        }
+        },  
+        selectRestaurant(restaurant) {
+        localStorage.setItem('userId', restaurant.id);
+        window.location.href = 'dish';
+      },
       },
       created(){
 
@@ -84,7 +88,7 @@
 
     <div class="row">
       <div class="col-sm-12 d-flex flex-wrap justify-content-center">
-        <div class="card col-sm-2 p-1 m-3 border" v-for="restaurant in filteredRestaurants" :key="restaurant.id">
+        <div class="card col-sm-2 p-1 m-3 border" @click="selectRestaurant(restaurant)" v-for="restaurant in filteredRestaurants" :key="restaurant.id">
           <img v-if="!restaurant.photo.includes('uploads/')" :src="getImageUrl(restaurant.photo)" alt="Restaurant Photo" class="card-img-top"/>
           <img v-else :src="getImageStore(restaurant.photo)" alt="Restaurant Photo" class="card-img-top"/>
           <RouterLink :to="{ name: 'dish'}">            
