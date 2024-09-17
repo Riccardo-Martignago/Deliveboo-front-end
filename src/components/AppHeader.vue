@@ -17,9 +17,6 @@ export default{
                 {
                     label: "About us",
                     name: "about"
-                },     
-                    label: "Search",
-                    name: "search"
                 },
                 {
                     label: "Shop",
