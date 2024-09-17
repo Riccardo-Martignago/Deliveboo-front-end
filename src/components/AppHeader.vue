@@ -18,10 +18,13 @@ export default{
                     label: "Restaurants",
                     name: "restaurants"
                 },
-                
                 {
                     label: "Search",
                     name: "search"
+                },
+                {
+                    label: "Shop",
+                    name: "shop"
                 },
             ],
             user: null

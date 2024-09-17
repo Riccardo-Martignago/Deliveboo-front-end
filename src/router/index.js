@@ -5,6 +5,7 @@ import SearchView from '../views/AppSearch.vue'
 import AboutView from '../views/AppAbout.vue'
 import AppLogin from '../views/AppLogin.vue'
 import DishView from '../views/AppDish.vue'
+import shopView from '../views/AppShop.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,6 +39,11 @@ const router = createRouter({
       path: '/dish',
       name: 'dish',
       component: DishView,
+    },,
+    {
+      path: '/shop',
+      name: 'shop',
+      component: shopView,
     },
   ]
 });
