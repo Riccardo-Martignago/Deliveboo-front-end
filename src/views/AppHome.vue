@@ -1,206 +1,169 @@
-<script >
-  import axios from 'axios';
-      export default {
-        data() {
-          return{
-            restaurantsWithTypology: [],
-            typologies: [],
-            selectedTypologies: [],
-            dropdownActive: false,
-          }
-        },
-        computed:{
-          filteredRestaurants() {
-            if (this.selectedTypologies.length === 0) {
-              return this.restaurantsWithTypology;
-            }
-            return this.restaurantsWithTypology.filter((restaurant) =>
-              this.selectedTypologies.includes(restaurant.typologyId)
-            );
-          },
-        },
-        methods:{
-          toggleDropdown() {
-            this.dropdownActive = !this.dropdownActive;
-          },
-          getRestaurants(){
-            axios.get('http://127.0.0.1:8000/api/typologies', {
-              params:{
-            }
-          })
-          .then((response) => {
-            console.log(response.data);
-            this.typologies = response.data;
-            this.restaurantsWithTypology = response.data.filter((typology) => typology.restaurants && typology.restaurants.length > 0) .map((typology) => {
-              return typology.restaurants.map((restaurant) => {
-              return {
-                ...restaurant,
-                typologyName: typology.name,
-                typologyId: typology.id,
-              };
-            });
-          })
-          .flat();
-          })
-          .catch(function (error){
-            console.log(error);
-          })
-        },
-        getImageUrl(photoPath) {
-          
-          return `http://127.0.0.1:8000/uploads/${photoPath}`;
-        },
-        getImageStore(photoPath){
-          return `http://127.0.0.1:8000/storage/${photoPath}`;
-        },  
-        selectRestaurant(restaurant) {
-        localStorage.setItem('userId', restaurant.id);
-        window.location.href = 'dish';
-      },
-      },
-      created(){
-
-        this.getRestaurants();
-      }
-    }
+<script>
+export default {
+  data() {
+    return {
+      primaFilaImages: [
+        { src: './src/img/img1.jpg', alt: 'Immagine 1' },
+        { src: './src/img/img2.png', alt: 'Immagine 2' },
+        { src: './src/img/img3.png', alt: 'Immagine 3' },
+        { src: './src/img/img4.jpg', alt: 'Immagine 4' },
+        { src: './src/img/img5.png', alt: 'Immagine 5' },
+        { src: './src/img/img6.jpg', alt: 'Immagine 6' },
+        { src: './src/img/img7.png', alt: 'Immagine 7' },
+        { src: './src/img/img8.png', alt: 'Immagine 8' }
+      ],
+      secondaFilaImages: [
+        { src: './src/img/img9.jpg', alt: 'Immagine 9' },
+        { src: './src/img/img10.jpg', alt: 'Immagine 10' },
+        { src: './src/img/img11.jpg', alt: 'Immagine 11' },
+        { src: './src/img/img12.jpg', alt: 'Immagine 12' },
+        { src: './src/img/img13.jpg', alt: 'Immagine 13' },
+        { src: './src/img/img14.jpg', alt: 'Immagine 14' },
+        { src: './src/img/img15.jpg', alt: 'Immagine 15' },
+        { src: './src/img/img16.jpg', alt: 'Immagine 16' }
+      ]
+    };
+  }
+}
 </script>
+
 
 <template>
   <main>
-    <div class="col-sm-12 d-flex justify-content-center align-items-center">
-      <div class="dropdown" :class="{ active: dropdownActive }">
-        <div class="dropdown-header" @click="toggleDropdown">
-          <span class="dropdown-title">Scegli il tuo ristorante in base alle tue preferenze!</span>
-          <i :class="dropdownActive ? 'arrow-up' : 'arrow-down'"></i>
-        </div>
-        <div class="dropdown-content">
-          <label v-for="typology in typologies" :key="typology.id" class="dropdown-label">
-            <input 
-              type="checkbox" 
-              :value="typology.id" 
-              v-model="selectedTypologies" 
-            />
-            {{ typology.name }}
-          </label>
-        </div>
+    <div class="row d-flex container">
+      <div class="col-sm-10 description">
+        <h1>
+          Ordina i tuoi piatti preferiti, dove vuoi, quando vuoi
+        </h1>
+        <p>
+          Scopri il nostro servizio di consegna a domicilio che ti porta il meglio della cucina direttamente a casa tua o in ufficio. Scegli tra una vasta selezione di ristoranti e gusti, dal comfort food ai piatti gourmet, e ricevi il tuo ordine in modo rapido e sicuro. Con pochi clic, il tuo pasto è già in arrivo!
+        </p>
+      </div>
+      <div class="col-sm-2 img">
+        <img src="../img/file.png" alt="">
       </div>
     </div>
 
-    <div class="row">
-      <div class="col-sm-12 d-flex flex-wrap justify-content-center">
-        <div class="card col-sm-2 p-1 m-3 border" @click="selectRestaurant(restaurant)" v-for="restaurant in filteredRestaurants" :key="restaurant.id">
-          <img v-if="!restaurant.photo.includes('uploads/')" :src="getImageUrl(restaurant.photo)" alt="Restaurant Photo" class="card-img-top"/>
-          <img v-else :src="getImageStore(restaurant.photo)" alt="Restaurant Photo" class="card-img-top"/>
-          <RouterLink :to="{ name: 'dish'}">            
-            <h3 class="card-title">{{ restaurant.name }}</h3>
-          </RouterLink>
-          <p class="typology">
-            <span class="fs">Tipologia:</span> {{ restaurant.typologyName }}
-          </p>
-          <p>
-            <span>Indirizzo:</span> {{ restaurant.adress }}
-          </p>
+    <div class="ristoranti">
+    <div class="scroll-container flex-wrap">
+      <div class="scroll-content col-sm-12">
+        <img v-for="(image, index) in primaFilaImages" :key="index" :src="image.src" :alt="image.alt" class="img-scroll">
+        <img v-for="(image, index) in primaFilaImages" :key="index" :src="image.src" :alt="image.alt" class="img-scroll">
         </div>
+        <div class="scroll-content col-sm-12">
+          <img v-for="(image, index) in secondaFilaImages" :key="index" :src="image.src" :alt="image.alt" class="img-scroll">
+          <img v-for="(image, index) in secondaFilaImages" :key="index" :src="image.src" :alt="image.alt" class="img-scroll">
+        </div>
+    </div>
+  </div>
+
+  <div class="row d-flex container">
+      <div class="col-sm-10 posizione">
+        <h1>
+          Segui gli ordini passo passo
+        </h1>
+        <p>
+          I piatti e i prodotti che ami, consegnati in pochissimo tempo. Vedrai quando il rider ha ritirato l'ordine, che potrai seguire passo passo, e riceverai una notifica quando sarà quasi da te.
+        </p>
+      </div>
+      <div class="col-sm-2 img">
+        <img src="../img/mappa.jpg" alt="">
       </div>
     </div>
+
+      
   </main>
 </template>
 
-
 <style>
-  .dropdown {
-    display: inline-block;
-    width: 800px;
-    padding: 25px;
 
-    .dropdown-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-      padding: 1rem 2rem;
-      background-color: white;
+.description{
+    margin-top: 130px;
+    padding: 5rem 10rem 5rem 5rem;
+    
 
-        .dropdown-title{
-          font-size: 25px;
-          font-weight: bold;
-        }
+    h1{
+      font-size: 70px;
+      color: rgb(134, 181, 222);
+      font-weight: bold;
+    }
 
-        .arrow-down::before {
-          content: "▼";
-          font-size: 20px;
-          color: #00bfa6;
-        }
-      
-        .arrow-up::before {
-          content: "▲";
-          font-size: 20px;
-          color: #00bfa6;
-        }
+    p{
+      font-size: 22px;
+      padding: 2rem 10rem 0rem 0rem;
+    }
+
+    
+  }
+
+  .posizione{
+    padding: 5rem 20rem 5rem 5rem;
+
+    h1{
+      font-size: 70px;
+      color: rgb(134, 181, 222);
+      font-weight: bold;
+    }
+
+    p{
+      font-size: 22px;
+      padding: 2rem 10rem 0rem 0rem;
     }
   }
-
-
-
-  .dropdown-content {
-    display: none;
-    background-color: white;
-    padding: 10px;
-
-      .dropdown-label {
-        display: flex;
-        align-items: center;
-        margin-bottom: 10px;
-        font-size: 20px;
-      }
-    
-      .dropdown-label input {
-        margin-right: 10px;
-        transform: scale(1.3);
-      }
-  }
-
-  .dropdown.active .dropdown-content {
-    display: block;
-  }
-
-
-  div.card{
+  div.img{
 
     img{
-      width: 100%;
-      height: 200px;
-      margin: 0 auto;
-      }
-
-    p.typology{
-      font-size: 16px;
-      font-weight: bold;
-      }
-
-    h3{
-      text-transform: capitalize;
-      font-size: 20px;
-      font-weight: revert;
-      padding-top: 1rem;
+      width: 600px;
+      margin-top: 7rem;
+      background-color: white;
+      margin-left: 8rem;
     }
-    
-    p{
-      font-size: 16px;
-      font-weight: revert;
-      padding: 0;
-      margin: 0;
-      
-        span{
-          font-weight: 600;
-          padding-right: 0.5rem;
-        }
 
-    span.fs{
-      font-size: 16px;
+  
+    
+    
+  }
+  
+  .ristoranti {
+  overflow: hidden; 
+  position: relative;
+  max-width: 100%;
+}
+
+.scroll-container {      
+  display: flex;
+  overflow: hidden;
+
+  .scroll-content {
+    display: flex;
+    flex-direction: row;
+    animation: scroll 20s linear infinite;
+
+    .img-scroll {
+      border-radius: 25px;
+      width: 250px;
+      height: 250px;
+      margin-right: 10px;
+      padding: 0.5rem;
     }
   }
 }
 
-</style>
 
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+
+
+
+
+
+  
+</style>
