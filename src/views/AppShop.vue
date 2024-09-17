@@ -1,31 +1,71 @@
-<script >
-	import axios from 'axios';
-    
-        export default {
-            data() {
-                return{
+<script>
+export default {
+  data() {
+    return {
+      cart: [],      // Array per i dati del carrello
+      cartTotal: 0,  // Totale del carrello
+    };
+  },
+  methods: {
+    // Caricare il carrello dal localStorage
+    loadCartFromLocalStorage() {
+      const savedCart = localStorage.getItem('cart');
+      if (savedCart) {
+        this.cart = JSON.parse(savedCart);
+      }
+    },
 
-                }
-            },
-        }
+    // Calcolare il totale del carrello
+    calculateCartTotal() {
+      this.cartTotal = this.cart.reduce((total, item) => {
+        return total + item.price * item.quantity;
+      }, 0);
+    },
+
+    // Simulazione del pagamento
+    simulatePayment() {
+      alert(`Pagamento completato per un totale di € ${this.cartTotal}`);
+      // Puoi aggiungere qui logiche aggiuntive per resettare il carrello
+      this.clearCart();
+    },
+
+    // Svuotare il carrello (per esempio dopo il pagamento)
+    clearCart() {
+      this.cart = [];
+      localStorage.removeItem('cart');
+      this.calculateCartTotal();
+    }
+  },
+  created() {
+    // Caricare il carrello dal localStorage e calcolare il totale quando il componente viene creato
+    this.loadCartFromLocalStorage();
+    this.calculateCartTotal();
+  },
+};
 </script>
 
 <template>
-    <main>
-    <div class="card" style="width: 18rem;">
-        <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <h6 class="card-subtitle mb-2 text-body-secondary">Card subtitle</h6>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            <a href="#" class="card-link">Card link</a>
-            <a href="#" class="card-link">Another link</a>
-        </div>
-    </div>
-    </main>
+  <div>
+    <h1>Riepilogo Acquisti</h1>
+    <!-- Lista dei prodotti nel carrello -->
+    <ul>
+      <li v-for="item in cart" :key="item.id">
+        {{ item.name }} - Quantità: {{ item.quantity }} - Prezzo: €
+        {{ item.price * item.quantity }}
+      </li>
+    </ul>
+
+    <!-- Totale del carrello -->
+    <h3>Totale: € {{ cartTotal }}</h3>
+
+    <!-- Bottone per simulare il pagamento -->
+    <button class="btn btn-primary" @click="simulatePayment">
+      Procedi al pagamento
+    </button>
+  </div>
 </template>
 
-
-<style leng="scss">
-
+<style scoped>
+/* Aggiungi qui il tuo CSS */
 </style>
 
