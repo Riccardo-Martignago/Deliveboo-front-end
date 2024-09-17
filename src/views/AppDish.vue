@@ -5,6 +5,8 @@ import axios from 'axios';
         data() {
           return{
             dishes: [],
+            cart:[],
+            cartTotal: 0,
           }
         },
         methods:{
@@ -30,10 +32,63 @@ import axios from 'axios';
         getImageUrl(photoPath) {
             return `http://127.0.0.1:8000/uploads/${photoPath}`;
         },
+        selectDish(dish) {
+                // Cerca se il piatto è già nel carrello
+            const existingDish = this.cart.find(item => item.id === dish.id);
+
+            if (existingDish) {
+                // Se il piatto è già presente, incrementa la quantità
+                existingDish.quantity++;
+            } else {
+                // Altrimenti, aggiungi il piatto al carrello con quantità 1
+                this.cart.push({
+                    id: dish.id,
+                    name: dish.name,
+                    price: dish.price,
+                    quantity: 1
+                });
+                // Aggiorna il localStorage
+                this.saveCartToLocalStorage();
+            }
+        },
+            // Salvare il carrello nel localStorage
+            saveCartToLocalStorage() {
+            localStorage.setItem('cart', JSON.stringify(this.cart));
+            },
+
+            // Caricare il carrello dal localStorage quando la pagina viene creata
+            loadCartFromLocalStorage() {
+            const savedCart = localStorage.getItem('cart');
+            if (savedCart) {
+                this.cart = JSON.parse(savedCart);
+            }
+            },
+
+            // Calcolare il totale del carrello
+            calculateCartTotal() {
+            this.cartTotal = this.cart.reduce((total, item) => {
+                return total + item.price * item.quantity;
+            }, 0);
+            }
+        },
+        created() {
+            // Caricare i piatti e il carrello dal localStorage quando il componente viene creato
+            this.getDishes();
+            this.loadCartFromLocalStorage();
+            this.calculateCartTotal();
+        },
+        watch: {
+            // Ogni volta che il carrello cambia, ricalcola il totale
+            cart: {
+            handler() {
+                this.calculateCartTotal();
+            },
+            deep: true
+            }
         },
         created(){
-        this.getDishes();
-      },
+            this.getDishes();
+        },
     }
 
 </script>
@@ -50,8 +105,11 @@ import axios from 'axios';
                         <span>Descrizione:</span> {{ dish.description }}
                     </p>
                     <p class="price">
-                       € {{ dish.price }}
+                        € {{ dish.price }}
                     </p>
+                    <div>
+                        <button type="button" class="btn btn-success" @click="selectDish(dish)">Add to cart</button>
+                    </div>
                 </div>         
             </div>
         </div>
