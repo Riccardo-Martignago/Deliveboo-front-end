@@ -1,4 +1,14 @@
 @use '../../node_modules/bootstrap/scss/bootstrap.scss';
+
+
 body{
-    background-color: rgb(255, 255, 255);
+    padding: 0px;
+    margin: 0 auto;
+    width: 100%;
+    box-shadow: 0px 5px 5px #dedede;
 }
+
+#app {
+    background-color: white;
+}
+

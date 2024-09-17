@@ -11,14 +11,13 @@ export default{
                     name: "home"
                 },
                 {
-                    label: "About us",
-                    name: "about"
-                },
-                {
                     label: "Restaurants",
                     name: "restaurants"
                 },
                 {
+                    label: "About us",
+                    name: "about"
+                },     
                     label: "Search",
                     name: "search"
                 },
@@ -84,62 +83,101 @@ export default{
 </script>
 
 <template>
-    <header>
-        <nav>
-            <div class="logo">
+        <header class="d-flex">
+            <div class="logo col-sm-3">
                 <router-link to="/">
-                    Deliveboo
+                    <img src="../img/logo.png" alt="Logo" class="img-logo"> DeliveBoo
                 </router-link>
             </div>
-            <ul>
-                <li v-for="link in linksName" :key="link.name">
-                    <router-link :to="{ name: link.name }">
-                        {{ link.label }}
-                    </router-link>
-                </li>
-                <li v-if="user">
-                    <span>Welcome, {{ user.name }}</span>
-                </li>
-                <li v-else>
-                    <router-link :to="{ name: 'login' }">
-                        Login
-                    </router-link>
-                </li>
-                <li v-if="user">
-                    <!-- Bottone per il Dashboard -->
-                    <button @click="goToDashboard">Dashboard</button>
-                </li>
-                <li v-if="user">
-                    <button @click="handleLogout">Logout</button>
-                </li>
-            </ul>
-        </nav>
-    </header>
+            <nav class="col-sm-9 d-flex align-items-center justify-content-end">
+                <ul class="col-sm-4">
+                    <li v-for="link in linksName" :key="link.name">
+                        <router-link :to="{ name: link.name }">
+                            {{ link.label }}
+                        </router-link>
+                    </li>
+                </ul>
+                <ul class="col-sm-6">
+                    <li v-if="user">
+                        <span>Welcome, {{ user.name }}</span>
+                    </li>
+                    <li v-else>
+                        <router-link :to="{ name: 'login' }">
+                            Login
+                        </router-link>
+                    </li>
+                    <li v-if="user">
+                        <!-- Bottone per il Dashboard -->
+                        <button @click="goToDashboard">Dashboard</button>
+                    </li>
+                    <li v-if="user">
+                        <button @click="handleLogout">Logout</button>
+                    </li>
+                </ul>
+            </nav>
+        </header>
 </template>
 
 <style scoped>
-header {
-    background-color: #333;
-    padding: 10px;
-}
 
-nav ul {
-    list-style: none;
-    display: flex;
-    justify-content: space-around;
-}
+    .logo > a:nth-child(1){
+        font-size: 35px;
+        color:  rgb(134, 181, 222);
+        font-weight: bold;
+        text-decoration: none;
+        }
 
-nav ul li {
-    margin: 0 10px;
-}
 
-nav ul li a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-}
+        .img-logo{
+            width: 110px;
+            color:  rgb(134, 181, 222);
+        }
+        header {
+            padding: 1rem 0rem 1rem 4rem;
+            box-shadow: 0px 5px 5px #dedede;
+            z-index: 1;
+            position: fixed;
+            height: 130px;
+            background-color:white;
+            width: 100%;
 
-nav ul li a:hover {
-    text-decoration: underline;
-}
+        nav{
+
+            ul {
+            list-style: none;
+            display: flex;
+            justify-content: space-around;
+
+            li {
+                margin: 0 10px;
+            }
+            
+            li a {
+                text-decoration: none;
+                color:  rgb(134, 181, 222);
+                font-weight: 600;
+                font-size: 18px;
+                margin-left: 0%;
+            }
+            li a:hover {
+                text-decoration: underline;
+            }
+
+        }
+    }
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
 </style>
