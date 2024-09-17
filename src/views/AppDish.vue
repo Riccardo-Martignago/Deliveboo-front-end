@@ -7,6 +7,7 @@ import axios from 'axios';
             dishes: [],
             cart:[],
             cartTotal: 0,
+            quantity: {}
           }
         },
         methods:{
@@ -32,53 +33,42 @@ import axios from 'axios';
         getImageUrl(photoPath) {
             return `http://127.0.0.1:8000/uploads/${photoPath}`;
         },
-        selectDish(dish) {
-                // Cerca se il piatto è già nel carrello
-            const existingDish = this.cart.find(item => item.id === dish.id);
+            selectDish(dish) {
+            const quant = this.quantity[dish.id];
 
-            if (existingDish) {
-                // Se il piatto è già presente, incrementa la quantità
-                existingDish.quantity++;
-            } else {
-                // Altrimenti, aggiungi il piatto al carrello con quantità 1
-                this.cart.push({
-                    id: dish.id,
-                    name: dish.name,
-                    price: dish.price,
-                    quantity: 1
-                });
-                // Aggiorna il localStorage
+                const existingDish = this.cart.find(item => item.id === dish.id);
+
+                if (existingDish) {
+                    existingDish.quantity += quant;
+                } else {
+                    this.cart.push({
+                        id: dish.id,
+                        name: dish.name,
+                        price: dish.price,
+                        quantity: quant
+                    });
+                }
                 this.saveCartToLocalStorage();
-            }
-        },
-            // Salvare il carrello nel localStorage
+
+                this.calculateCartTotal();
+            },
+
             saveCartToLocalStorage() {
-            localStorage.setItem('cart', JSON.stringify(this.cart));
+                localStorage.setItem('cart', JSON.stringify(this.cart));
             },
 
-            // Caricare il carrello dal localStorage quando la pagina viene creata
-            loadCartFromLocalStorage() {
-            const savedCart = localStorage.getItem('cart');
-            if (savedCart) {
-                this.cart = JSON.parse(savedCart);
-            }
-            },
-
-            // Calcolare il totale del carrello
             calculateCartTotal() {
-            this.cartTotal = this.cart.reduce((total, item) => {
-                return total + item.price * item.quantity;
-            }, 0);
+                this.cartTotal = this.cart.reduce((total, item) => {
+                    return total + item.price * item.quantity;
+                }, 0);
             }
         },
         created() {
-            // Caricare i piatti e il carrello dal localStorage quando il componente viene creato
             this.getDishes();
             this.loadCartFromLocalStorage();
             this.calculateCartTotal();
         },
         watch: {
-            // Ogni volta che il carrello cambia, ricalcola il totale
             cart: {
             handler() {
                 this.calculateCartTotal();
@@ -97,7 +87,7 @@ import axios from 'axios';
     <h1>Menù del Ristorante</h1>    
     <div class="row">
         <div class="col-sm-9 d-flex flex-wrap zeroauto">
-            <div class="card col-sm-12 p-1 m-3 border d-flex flex-row align-items-start" v-for="dish in dishes" :key="dish.id">
+            <div class="card col-sm-12 p-1 m-3 border d-flex flex-row align-items-start" v-for="(dish) in dishes" :key="dish.id">
                 <img :src="getImageUrl(dish.photo)" alt="Dish Photo" class="col-sm-3 mb-3 card-img-top"/>
                 <div class="col-sm-9 mb-3 d-flex flex-column">
                     <h3 class="card-title">{{ dish.name }}</h3>
@@ -107,10 +97,12 @@ import axios from 'axios';
                     <p class="price">
                         € {{ dish.price }}
                     </p>
-                    <div>
+                    <form>
+                        <label for="quantity" class="form-label">Select quantity:</label>
+                        <input type="number" v-model="quantity[dish.id]" min="1" value="1">
                         <button type="button" class="btn btn-success" @click="selectDish(dish)">Add to cart</button>
-                    </div>
-                </div>         
+                    </form>
+                </div>
             </div>
         </div>
     </div>
