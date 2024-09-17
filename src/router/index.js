@@ -3,7 +3,6 @@ import HomeView from '../views/AppHome.vue'
 import RestaurantsView from '../views/AppRestaurants.vue'
 import SearchView from '../views/AppSearch.vue'
 import AboutView from '../views/AppAbout.vue'
-import AppLogin from '../views/AppLogin.vue'
 import DishView from '../views/AppDish.vue'
 
 const router = createRouter({
@@ -28,11 +27,6 @@ const router = createRouter({
       path: '/about',
       name: 'about',
       component: AboutView
-    },
-    {
-      path: '/login',
-      name: 'login',
-      component: AppLogin
     },
     {
       path: '/dish',
