@@ -41,22 +41,46 @@ import axios from 'axios';
 <template>
     <h1>Menù del Ristorante</h1>    
     <div class="row">
-      <div class="col-sm-12 d-flex flex-wrap justify-content-center">
-        <div class="card col-sm-2 p-1 m-3 border" v-for="dish in dishes" :key="dish.id">
-            <img :src="getImageUrl(dish.photo)" alt="Dish Photo" class="card-img-top"/>         
-            <h3 class="card-title">{{ dish.name }}</h3>
-          
-            <p class="typology">
-                <span class="fs">Descrizione:</span> {{ dish.description }}
-            </p>
-            <p>
-                <span>Prezzo:</span> {{dish.price}}
-            </p>
+        <div class="col-sm-9 d-flex flex-wrap zeroauto">
+            <div class="card col-sm-12 p-1 m-3 border d-flex flex-row align-items-start" v-for="dish in dishes" :key="dish.id">
+                <img :src="getImageUrl(dish.photo)" alt="Dish Photo" class="col-sm-3 mb-3 card-img-top"/>
+                <div class="col-sm-9 mb-3 d-flex flex-column">
+                    <h3 class="card-title">{{ dish.name }}</h3>
+                    <p>
+                        <span>Descrizione:</span> {{ dish.description }}
+                    </p>
+                    <p class="price">
+                       € {{ dish.price }}
+                    </p>
+                </div>         
             </div>
         </div>
     </div>
+
 </template>
 
 <style>
+div.zeroauto{
+    margin: 0 auto;
+    font-size: 20px;
+}
 
+ div.card{
+
+    img{
+        width: 300px;
+        height: 200px;
+        margin-top: 1rem;
+    }
+
+    div>p>span{
+        font-weight: bold;
+        font-size: 18px;
+
+    }
+
+    .price{
+        font-size:xx-large;
+    }
+ }
 </style>
