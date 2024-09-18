@@ -49,20 +49,9 @@ export default{
                     </li>
                 </ul>
                 <ul class="col-sm-6">
-                    <li v-if="user">
-                        <span>Welcome, {{ user.name }}</span>
-                    </li>
-                    <li v-else>
-                        <router-link :to="{ name: 'login' }">
-                            Login
-                        </router-link>
-                    </li>
-                    <li v-if="user">
+                    <li>
                         <!-- Bottone per il Dashboard -->
                         <button @click="goToDashboard">Dashboard</button>
-                    </li>
-                    <li v-if="user">
-                        <button @click="handleLogout">Logout</button>
                     </li>
                 </ul>
             </nav>
