@@ -1,68 +1,68 @@
 <script >
-  import axios from 'axios';
-      export default {
-        data() {
-          return{
-            restaurantsWithTypology: [],
-            typologies: [],
-            selectedTypologies: [],
-            dropdownActive: false,
-          }
-        },
-        computed:{
-          filteredRestaurants() {
-            if (this.selectedTypologies.length === 0) {
-              return this.restaurantsWithTypology;
-            }
-            return this.restaurantsWithTypology.filter((restaurant) =>
-              this.selectedTypologies.includes(restaurant.typologyId)
-            );
-          },
-        },
-        methods:{
-          toggleDropdown() {
-            this.dropdownActive = !this.dropdownActive;
-          },
-          getRestaurants(){
-            axios.get('http://127.0.0.1:8000/api/typologies', {
-              params:{
-            }
-          })
-          .then((response) => {
-            console.log(response.data);
-            this.typologies = response.data;
-            this.restaurantsWithTypology = response.data.filter((typology) => typology.restaurants && typology.restaurants.length > 0) .map((typology) => {
-              return typology.restaurants.map((restaurant) => {
-              return {
-                ...restaurant,
-                typologyName: typology.name,
-                typologyId: typology.id,
-              };
-            });
-          })
-          .flat();
-          })
-          .catch(function (error){
-            console.log(error);
-          })
-        },
-        getImageUrl(photoPath) {
-          
-          return `http://127.0.0.1:8000/uploads/${photoPath}`;
-        },
-        getImageStore(photoPath){
-          return `http://127.0.0.1:8000/storage/${photoPath}`;
-        },  
-        selectRestaurant(restaurant) {
-        localStorage.setItem('userId', restaurant.id);
-        window.location.href = 'dish';
-      },
-      },
-      created(){
+import axios from 'axios';
 
-        this.getRestaurants();
+export default {
+  data() {
+    return {
+      restaurantsWithTypology: [],
+      typologies: [],
+      selectedTypologies: [],
+      dropdownActive: false,
+    };
+  },
+  computed: {
+    filteredRestaurants() {
+      if (this.selectedTypologies.length === 0) {
+        return this.restaurantsWithTypology;
       }
-    }
+      return this.restaurantsWithTypology.filter((restaurant) =>
+        this.selectedTypologies.every((typologyId) =>
+          restaurant.typologyId.includes(typologyId)
+        )
+      );
+    },
+  },
+  methods: {
+    toggleDropdown() {
+      this.dropdownActive = !this.dropdownActive;
+    },
+    getRestaurants() {
+      axios.get('http://127.0.0.1:8000/api/typologies')
+        .then((response) => {
+          console.log(response.data);
+          this.typologies = response.data;
+          this.restaurantsWithTypology = response.data
+            .filter((typology) => typology.restaurants && typology.restaurants.length > 0)
+            .map((typology) => {
+              return typology.restaurants.map((restaurant) => {
+                return {
+                  ...restaurant,
+                  typologyName: typology.name,
+                  typologyId: [typology.id], // Cambiato per includere un array di typologyId
+                };
+              });
+            })
+            .flat();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    getImageUrl(photoPath) {
+      return `http://127.0.0.1:8000/uploads/${photoPath}`;
+    },
+    getImageStore(photoPath) {
+      return `http://127.0.0.1:8000/storage/${photoPath}`;
+    },
+    selectRestaurant(restaurant) {
+      localStorage.setItem('userId', restaurant.id);
+      window.location.href = 'dish';
+    },
+  },
+  created() {
+    this.getRestaurants();
+  },
+};
 </script>
 
 <template>
