@@ -1,5 +1,6 @@
 <script>
 import braintree from 'braintree-web';
+import axios from 'axios';
 export default {
   data() {
     return {
@@ -42,18 +43,35 @@ export default {
 
     // Metodo per mandare i dati della carta a Braintree
     payWithCreditCard() {
-      if(this.hostedFieldInstance)
-      {
-          this.hostedFieldInstance.tokenize().then(payload => {
-              console.log(payload);
-              this.nonce = payload.nonce;
+      if(this.hostedFieldInstance) {
+        this.hostedFieldInstance.tokenize().then(payload => {
+          this.nonce = payload.nonce;
+
+          // Invia il nonce e l'importo al server usando axios
+          axios.post('http://localhost:8000/api/payment/process', {
+            paymentMethodNonce: this.nonce,
+            amount: this.cartTotal
+          })
+          .then(response => {
+            const result = response.data;
+            if (result.success) {
+              alert('Pagamento completato con successo');
+              this.clearCart();
+            } else {
+              alert('Errore nel pagamento: ' + result.message);
+            }
           })
           .catch(err => {
-              console.error(err);
-              this.error = err.message;
-          })
+            console.error('Errore nel processo di pagamento:', err);
+          });
+        })
+        .catch(err => {
+          console.error(err);
+          this.error = err.message;
+        });
       }
-  }
+    }
+
   },
   created() {
     // Caricare il carrello dal localStorage e calcolare il totale quando il componente viene creato
@@ -61,45 +79,47 @@ export default {
     this.calculateCartTotal();
   },
   mounted() {
-      braintree.client.create({
-          authorization: "sandbox_csd6tvwy_44nxng54m6y3sxbp"
-      })
-      .then(clientInstance => {
-          let options = {
-              client: clientInstance,
-              styles: {
-                  input: {
-                      'font-size': '14px',
-                      'font-family': 'Open Sans'
-                  }
-              },
-              fields: {
-                  number: {
-                      selector: '#creditCardNumber',
-                      placeholder: 'Enter Credit Card'
-                  },
-                  cvv: {
-                      selector: '#cvv',
-                      placeholder: 'Enter CVV'
-                  },
-                  expirationDate: {
-                      selector: '#expireDate',
-                      placeholder: '00 / 0000'
-                  }
+      axios.get('/api/payment/token')
+        .then(response => {
+          // Usa il token ricevuto dalla API per l'autorizzazione di Braintree
+          return braintree.client.create({
+            authorization: "sandbox_csd6tvwy_44nxng54m6y3sxbp" // Usa il token dalla risposta
+          });
+        })
+        .then(clientInstance => {
+          return braintree.hostedFields.create({
+            client: clientInstance,
+            styles: {
+              input: {
+                'font-size': '14px',
+                'font-family': 'Open Sans'
               }
-          }
-          return braintree.hostedFields.create(options)
-      })
-      .then(hostedFieldInstance => {
-          // @TODO - Use hostedFieldInstance to send data to Braintree
-          this.hostedFieldInstance = hostedFieldInstance;
-      })
-      .catch(err => {
-      });
+            },
+            fields: {
+              number: {
+                selector: '#creditCardNumber',
+                placeholder: 'Enter Credit Card'
+              },
+              cvv: {
+                selector: '#cvv',
+                placeholder: 'Enter CVV'
+              },
+              expirationDate: {
+                selector: '#expireDate',
+                placeholder: '00 / 0000'
+              }
+            }
+          });
+        })
+        .then(hostedFieldsInstance => {
+          this.hostedFieldInstance = hostedFieldsInstance;
+        })
+        .catch(err => {
+          console.error(err);
+        });
     }
-};
+}
 </script>
-
 <template>
   <div>
     <h1>Riepilogo Acquisti</h1>
@@ -126,13 +146,6 @@ export default {
     </div>
     <div class="alert alert-danger" v-else-if="error">
       {{ error }}
-    </div>
-    <div class="form-group">
-        <label for="amount">Amount</label>
-        <div class="input-group">
-            <div class="input-group-prepend"><span class="input-group-text">$</span></div>
-            <input type="number" id="amount" class="form-control" placeholder="Enter Amount">
-        </div>
     </div>
       <hr />
     <div class="form-group">
