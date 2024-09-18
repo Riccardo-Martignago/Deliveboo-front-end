@@ -12,42 +12,51 @@ export default {
   },
   computed: {
     filteredRestaurants() {
-      if (this.selectedTypologies.length === 0) {
-        return this.restaurantsWithTypology;
-      }
-      return this.restaurantsWithTypology.filter((restaurant) =>
-        this.selectedTypologies.every((typologyId) =>
-          restaurant.typologyId.includes(typologyId)
-        )
-      );
-    },
+  if (this.selectedTypologies.length === 0) {
+    return this.restaurantsWithTypology;
+  }
+  return this.restaurantsWithTypology.filter((restaurant) =>
+    this.selectedTypologies.every((typologyId) =>
+      restaurant.typologyId.includes(typologyId)
+    )
+  );
+},
   },
   methods: {
     toggleDropdown() {
       this.dropdownActive = !this.dropdownActive;
+      console.log('Dropdown status:', this.dropdownActive);
     },
     getRestaurants() {
-      axios.get('http://127.0.0.1:8000/api/typologies')
-        .then((response) => {
-          console.log(response.data);
-          this.typologies = response.data;
-          this.restaurantsWithTypology = response.data
-            .filter((typology) => typology.restaurants && typology.restaurants.length > 0)
-            .map((typology) => {
-              return typology.restaurants.map((restaurant) => {
-                return {
-                  ...restaurant,
-                  typologyName: typology.name,
-                  typologyId: [typology.id], // Cambiato per includere un array di typologyId
-                };
+  axios.get('http://127.0.0.1:8000/api/typologies')
+    .then((response) => {
+      console.log(response.data); // Controlla se le tipologie vengono caricate
+      this.typologies = response.data; // Aggiorna le tipologie
+      const restaurantMap = new Map();
+
+      response.data.forEach((typology) => {
+        if (typology.restaurants && typology.restaurants.length > 0) {
+          typology.restaurants.forEach((restaurant) => {
+            if (restaurantMap.has(restaurant.id)) {
+              restaurantMap.get(restaurant.id).typologyId.push(typology.id);
+              restaurantMap.get(restaurant.id).typologyName.push(typology.name);
+            } else {
+              restaurantMap.set(restaurant.id, {
+                ...restaurant,
+                typologyId: [typology.id],
+                typologyName: [typology.name],
               });
-            })
-            .flat();
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
+            }
+          });
+        }
+      });
+
+      this.restaurantsWithTypology = Array.from(restaurantMap.values());
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+},
     getImageUrl(photoPath) {
       return `http://127.0.0.1:8000/uploads/${photoPath}`;
     },
@@ -78,7 +87,8 @@ export default {
             <input 
               type="checkbox" 
               :value="typology.id" 
-              v-model="selectedTypologies" 
+              v-model="selectedTypologies"
+              @change="console.log(selectedTypologies)" 
             />
             {{ typology.name }}
           </label>
@@ -88,7 +98,7 @@ export default {
 
     <div class="row">
       <div class="col-sm-12 d-flex flex-wrap justify-content-center">
-        <div class="card col-sm-2 p-1 m-3 border" @click="selectRestaurant(restaurant)" v-for="restaurant in filteredRestaurants" :key="restaurant.id">
+        <div class="card col-sm-2 p-1 m-3 border" @click="selectRestaurant(restaurant)" v-for="restaurant in filteredRestaurants" :key="`${restaurant.id}-${restaurant.typologyId}`">
           <img v-if="!restaurant.photo.includes('uploads/')" :src="getImageUrl(restaurant.photo)" alt="Restaurant Photo" class="card-img-top"/>
           <img v-else :src="getImageStore(restaurant.photo)" alt="Restaurant Photo" class="card-img-top"/>
           <RouterLink :to="{ name: 'dish'}">            
