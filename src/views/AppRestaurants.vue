@@ -96,7 +96,7 @@ export default {
     <div class="col-sm-12 d-flex justify-content-center align-items-center">
       <div class="dropdown" :class="{ active: dropdownActive }">
         <div class="dropdown-header" @click="toggleDropdown">
-          <span class="dropdown-title">Scegli il tuo ristorante in base alle tue preferenze!</span>
+          <span class="dropdown-title">Choose your restaurant based on your preferences!</span>
           <i :class="dropdownActive ? 'arrow-up' : 'arrow-down'"></i>
         </div>
         <div class="dropdown-content">
@@ -121,11 +121,14 @@ export default {
           <RouterLink :to="{ name: 'dish'}">            
             <h3 class="card-title">{{ restaurant.name }}</h3>
           </RouterLink>
-          <p class="typology">
-            <span class="fs">Tipologia:</span> {{ restaurant.typologyName }}
-          </p>
+          <div>
+            <span class="fs">Typologies:</span>
+            <p class="typology" v-for="typology in restaurant.typologyName">
+                <span>{{ typology }}</span>
+            </p>
+          </div>
           <p>
-            <span>Indirizzo:</span> {{ restaurant.adress }}
+            <span>Address:</span> {{ restaurant.adress }}
           </p>
         </div>
       </div>

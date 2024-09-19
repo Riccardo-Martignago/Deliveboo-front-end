@@ -98,10 +98,10 @@ import axios from 'axios';
                 const savedCart = localStorage.getItem('cart');
                 if (savedCart) {
                     this.cart = JSON.parse(savedCart);
-                    console.log("Carrello caricato: ", this.cart);
+                    console.log("Cart loaded: ", this.cart);
                 }
                 else{
-                    console.log("Nessun carrello trovato nel localStorage.");
+                    console.log("No carts found in localStorage.");
                 }
                 this.calculateCartTotal();
             },
@@ -111,12 +111,12 @@ import axios from 'axios';
                 }, 0);
             },
                 decreaseQuantity(dishId) {
-                    if (this.quantity[dishId] > 1) {
+                    if (this.quantity[dishId] > 0) {
                     this.quantity[dishId]--;
                     }
                 },
                 increaseQuantity(dishId) {
-                    this.quantity[dishId] = (this.quantity[dishId] || 1) + 1;
+                    this.quantity[dishId] = (this.quantity[dishId] || 0) + 1;
                 },
             clearCartAndAddDish() {
                 this.cart = [];
@@ -161,7 +161,7 @@ import axios from 'axios';
             </h1>
             <p>
               <span>
-                Indirizzo:
+                Address:
               </span>  {{ restaurantInfo.adress }}
             </p>
             <p>
@@ -181,7 +181,7 @@ import axios from 'axios';
     </div>
     <div class="row pb-5">
         <div class="center">
-            <h1 class="title">Menù del Ristorante</h1>    
+            <h1 class="title">Restaurant menu</h1>    
         </div>
         <div class="col-sm-10 d-flex flex-wrap justify-content-center zeroauto ">
             <div class="card col-sm-3 p-1 m-3 border d-flex align-items-start border border-secondary" v-for="(dish) in dishes" :key="dish.id">
@@ -189,7 +189,7 @@ import axios from 'axios';
                 <div class="col-sm-12 mb-3 d-flex flex-column ">
                     <h3 class="card-title">{{ dish.name }}</h3>
                     <p>
-                        <span>Descrizione:</span> {{ dish.description }}
+                        <span>Description:</span> {{ dish.description }}
                     </p>
                     <p class="price">
                         € {{ dish.price }}
@@ -203,11 +203,12 @@ import axios from 'axios';
                             <input 
                                 type="number" 
                                 v-model="quantity[dish.id]" 
-                                min="1" 
-                                value="1" 
+                                min="0" 
+                                value="0" 
                                 class="text-center border border-0"
                                 style="width: 50px;" 
                                 readonly
+                                placeholder="0"
                             />
                             
                             <button type="button" class="btn border border-secondary me-5" @click="increaseQuantity(dish.id)">
@@ -225,10 +226,10 @@ import axios from 'axios';
     </div>
     <div v-if="showModal" class="modal-backdrop">
         <div class="modal-content">
-            <h4>Attenzione</h4>
-            <p>Hai già piatti del ristorante A nel carrello. Vuoi cancellare il carrello e aggiungere piatti del ristorante B?</p>
-            <button @click="showModal = false" class="btn btn-secondary">Mantieni il carrello</button>
-            <button @click="clearCartAndAddDish" class="btn btn-danger">Cancella e aggiungi</button>
+            <h4>Attention</h4>
+            <p>You already have dishes from restaurant A in your cart. Do you want to cancel your cart and add dishes from restaurant B?</p>
+            <button @click="showModal = false" class="btn btn-secondary">Keep the cart</button>
+            <button @click="clearCartAndAddDish" class="btn btn-danger">Delete and add</button>
         </div>
     </div>
 </template>

@@ -4,12 +4,10 @@
             <div class="chisiamo">
                 <div>
                     <h1>
-                        Chi Siamo
+                        Who we are
                     </h1>
                     <p>
-                        Benvenuti su Deliveboo, la tua destinazione preferita per gustare piatti deliziosi e prodotti freschi direttamente a casa tua. La nostra missione è semplice: portare qualità e sapori autentici alla tua porta, senza compromessi sulla freschezza o il servizio.
-    
-                        Collaboriamo con i migliori ristoranti locali e fornitori di prodotti alimentari per offrirti una selezione che spazia dalla cucina tradizionale ai piatti più innovativi, soddisfacendo ogni palato. Che tu stia cercando un pasto veloce o ingredienti di qualità per le tue ricette, siamo qui per rendere la tua esperienza facile, veloce e piacevole.
+                        We collaborate with the best local restaurants and food suppliers to offer you a selection that ranges from traditional cuisine to the most innovative dishes, satisfying every palate. Whether you're looking for a quick meal or quality ingredients for your recipes, we're here to make your experience easy, fast and enjoyable.
                     </p>
                 </div>
                 <img src="../img/chi siamo.webp" alt="">
@@ -17,10 +15,10 @@
             <div class="lanostravisione flex-row-reverse">
                 <div>
                     <h1>
-                        La nostra visione
+                        Our vision
                     </h1>
                     <p>
-                        Crediamo che il cibo sia molto più di semplice nutrimento: è cultura, comunità e creatività. La nostra visione è quella di creare un'esperienza che connetta le persone ai sapori unici della loro città, promuovendo la sostenibilità e valorizzando i produttori locali. Vogliamo essere il ponte tra te e la tua passione per il cibo, offrendo sempre il meglio, dal primo clic fino alla consegna.
+                        We believe that food is much more than just nourishment: it is culture, community and creativity. Our vision is to create an experience that connects people to the unique flavors of their city, promoting sustainability and valorizing local producers. We want to be the bridge between you and your passion for food, always offering the best, from the first click to delivery.
                     </p>
                 </div>
                 <img src="../img/visione.jpg" alt="">
@@ -28,10 +26,10 @@
             <div class="inostrivalori">
                 <div>
                     <h1>
-                        I nostri valori
+                        Our values
                     </h1>
                     <p>
-                        Qualità, freschezza e trasparenza sono al centro di tutto ciò che facciamo. Ci impegniamo a selezionare solo i migliori ingredienti e partner, garantendo che ogni ordine soddisfi gli standard più elevati. La tua soddisfazione è la nostra priorità, e ci sforziamo di rendere ogni interazione con noi positiva, con un servizio clienti attento e consegne puntuali, ovunque tu sia.
+                        Quality, freshness and transparency are at the heart of everything we do. We are committed to selecting only the best ingredients and partners, ensuring that every order meets the highest standards. Your satisfaction is our priority, and we strive to make every interaction with us positive, with attentive customer service and on-time deliveries, wherever you are.
                     </p>
                 </div>
                 <img src="../img/valori.png" alt="">
