@@ -28,32 +28,36 @@ export default {
       console.log('Dropdown status:', this.dropdownActive);
     },
     getRestaurants() {
-  axios.get('http://127.0.0.1:8000/api/typologies')
-    .then((response) => {
-      console.log(response.data); // Controlla se le tipologie vengono caricate
-      this.typologies = response.data; // Aggiorna le tipologie
-      const restaurantMap = new Map();
+      axios.get('http://127.0.0.1:8000/api/typologies')
 
-      response.data.forEach((typology) => {
-        if (typology.restaurants && typology.restaurants.length > 0) {
-          typology.restaurants.forEach((restaurant) => {
-            if (restaurantMap.has(restaurant.id)) {
-              restaurantMap.get(restaurant.id).typologyId.push(typology.id);
-              restaurantMap.get(restaurant.id).typologyName.push(typology.name);
-            } else {
-              restaurantMap.set(restaurant.id, {
-                ...restaurant,
-                typologyId: [typology.id],
-                typologyName: [typology.name],
-              };
+      .then((response) => {
+        console.log(response.data); // Controlla se le tipologie vengono caricate
+        this.typologies = response.data; // Aggiorna le tipologie
+        const restaurantMap = new Map();
+
+        response.data.forEach((typology) => {
+          if (typology.restaurants && typology.restaurants.length > 0) {
+            typology.restaurants.forEach((restaurant) => {
+              if (restaurantMap.has(restaurant.id)) {
+                restaurantMap.get(restaurant.id).typologyId.push(typology.id);
+                restaurantMap.get(restaurant.id).typologyName.push(typology.name);
+              } else {
+                restaurantMap.set(restaurant.id, {
+                  ...restaurant,
+                  typologyId: [typology.id],
+                  typologyName: [typology.name],
+                });
+              }
             });
-          })
-           this.restaurantsWithTypology = Array.from(restaurantMap.values());
-          })
-          .catch(function (error){
-            console.log(error);
-          })
-        },
+          }
+      });
+
+      this.restaurantsWithTypology = Array.from(restaurantMap.values());
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  },
         getImageUrl(photoPath) {
           
           return `http://127.0.0.1:8000/uploads/${photoPath}`;
