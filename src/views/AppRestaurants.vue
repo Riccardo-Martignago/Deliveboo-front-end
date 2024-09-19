@@ -55,6 +55,20 @@
         },  
         selectRestaurant(restaurant) {
         localStorage.setItem('userId', restaurant.id);
+        localStorage.setItem('name', restaurant.name);
+        localStorage.setItem('email', restaurant.email);
+        localStorage.setItem('photo', restaurant.photo);
+        localStorage.setItem('piva', restaurant.piva);
+        localStorage.setItem('adress', restaurant.adress);
+        
+        console.log('Data saved to localStorage:', {
+          name: restaurant.name,
+          email: restaurant.email,
+          photo: restaurant.photo,
+          piva: restaurant.piva,
+          adress: restaurant.adress
+        });
+
         window.location.href = 'dish';
       },
       },

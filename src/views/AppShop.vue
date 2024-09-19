@@ -57,6 +57,8 @@ export default {
 </template>
 
 <style scoped>
-   
+   div{
+    padding-top: 150px;
+   }
 </style>
 

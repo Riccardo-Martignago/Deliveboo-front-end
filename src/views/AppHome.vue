@@ -107,7 +107,7 @@ export default {
 
 .description{
     margin-top: 130px;
-    padding: 5rem 10rem 5rem 5rem;
+    padding: 2rem 10rem 5rem 5rem;
     
 
     h1{
@@ -125,7 +125,7 @@ export default {
   }
 
   .posizione{
-    padding: 8rem 20rem 5rem 8rem;
+    padding: 2rem 20rem 5rem 8rem;
 
     h1{
       font-size: 70px;
@@ -142,9 +142,9 @@ export default {
 
     img{
       width: 600px;
-      margin-top: 7rem;
+      margin-top: 5rem;
       background-color: white;
-      margin-left: 8rem;
+      margin-left: 6rem;
     }
 
   

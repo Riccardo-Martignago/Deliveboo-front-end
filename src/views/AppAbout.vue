@@ -47,37 +47,40 @@
 </script>
 
 <style scoped>
-    div.container{
+   main{
         padding-top: 150px;
-
-        div{
-            display: flex;
-            margin: 5rem 0rem;
-            justify-content: space-between;
-            align-items: center;
-
-
+        
+        div.container{
 
             div{
                 display: flex;
-                flex-direction: column;
-                width: 50%;
-
-                h1{
-                    color:  rgb(134, 181, 222);
-                    font-weight: bold;
-                    font-size: 35px;
-                    padding-bottom: 2rem;
+                margin: 3rem 0rem;
+                justify-content: space-between;
+                align-items: center;
+    
+    
+    
+                div{
+                    display: flex;
+                    flex-direction: column;
+                    width: 50%;
+    
+                    h1{
+                        color:  rgb(134, 181, 222);
+                        font-weight: bold;
+                        font-size: 35px;
+                        padding-bottom: 2rem;
+                    }
+    
+                    p{
+                        font-size: 18px;
+                    }
                 }
-
-                p{
-                    font-size: 18px;
+    
+                img{
+                    width: 40%;
+                    height: 40%;
                 }
-            }
-
-            img{
-                width: 40%;
-                height: 40%;
             }
         }
     }
