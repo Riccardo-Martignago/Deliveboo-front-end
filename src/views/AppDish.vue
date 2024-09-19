@@ -83,6 +83,7 @@ import axios from 'axios';
                 }
                     if (!this.currentRestaurantId) {
                     this.currentRestaurantId = dish.user_id;
+                    localStorage.setItem('currentRestaurantId', this.currentRestaurantId);
                 }
 
                 this.showModal = false;  
@@ -114,6 +115,7 @@ import axios from 'axios';
                 this.addDishToCart(this.selectedDish, this.selectedDish.quantity);
                 this.selectedDish = null;
                 this.currentRestaurantId = this.selectedDish.user_id;
+                localStorage.setItem('currentRestaurantId', this.currentRestaurantId);
                 this.saveCartToLocalStorage();
             },
 
@@ -123,6 +125,10 @@ import axios from 'axios';
             this.loadCartFromLocalStorage();
             this.calculateCartTotal();
             this.getRestaurantInfo();
+            const savedRestaurantId = localStorage.getItem('currentRestaurantId');
+                if (savedRestaurantId) {
+                    this.currentRestaurantId = parseInt(savedRestaurantId);
+                }
         },
         watch: {
             cart: {
