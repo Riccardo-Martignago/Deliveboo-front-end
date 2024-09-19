@@ -159,9 +159,9 @@ export default {
 </form>
 </template>
 
-<style lang="scss" scoped>
-div{
-  padding-top: 130px;
-}
+<style scoped>
+  div{
+    padding-top: 150px;
+  }
 </style>
 

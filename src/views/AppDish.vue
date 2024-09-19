@@ -10,10 +10,32 @@ import axios from 'axios';
                 quantity: {},
                 currentRestaurantId: null,  
                 showModal: false,           
-                selectedDish: null,  
+                selectedDish: null,
+                restaurantInfo: {
+                    name: '',
+                    photo: '',
+                    adress: '',
+                    piva: '',
+                    email: '',
+                },  
             }
         },
         methods:{
+                getRestaurantInfo() {
+                this.restaurantInfo.name = localStorage.getItem('name');
+                this.restaurantInfo.photo = localStorage.getItem('photo');
+                this.restaurantInfo.adress = localStorage.getItem('adress');
+                this.restaurantInfo.piva = localStorage.getItem('piva');
+                this.restaurantInfo.email = localStorage.getItem('email');
+                
+                console.log('Restaurant Info Loaded:', {
+                    name: this.name,
+                    photo: this.photo,
+                    adress: this.adress,
+                    piva: this.piva,
+                    email: this.email
+                });
+                },
             getDishes(){
                 this.userId = localStorage.getItem('userId');
 
@@ -100,6 +122,7 @@ import axios from 'axios';
             this.getDishes();
             this.loadCartFromLocalStorage();
             this.calculateCartTotal();
+            this.getRestaurantInfo();
         },
         watch: {
             cart: {
@@ -114,6 +137,24 @@ import axios from 'axios';
 </script>
 
 <template>
+    <div class="row ristorante d-flex justify-content-center">
+        <img :src="getImageUrl(restaurantInfo.photo)" alt="Restaurant Photo" class="card-img-top cl-sm-3"/>
+        <div class="row col-sm-8 ps-5">
+            <h1>
+                {{ restaurantInfo.name }}
+            </h1>
+            <p>
+                {{ restaurantInfo.adress }}
+            </p>
+            <p>
+                {{ restaurantInfo.email }}
+            </p>
+            <p>
+                {{ restaurantInfo.piva }}
+            </p>
+
+        </div>
+    </div>
     <h1>Menù del Ristorante</h1>    
     <div class="row">
         <div class="col-sm-9 d-flex flex-wrap zeroauto">
@@ -146,7 +187,22 @@ import axios from 'axios';
     </div>
 </template>
 
-<style lang="scss" scoped>
+<style>
+.ristorante{
+    padding-top: 150px;
+
+    img{
+        width: 350px;
+        border-radius: 50px;
+    }
+
+    h1{
+        text-transform: capitalize;
+        font-weight: bold;
+        font-size: 40px;
+    }
+}
+
 div.zeroauto{
     margin: 0 auto;
     font-size: 20px;
