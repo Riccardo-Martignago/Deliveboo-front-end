@@ -26,7 +26,7 @@ export default {
     },
 
     simulatePayment() {
-      alert(`Pagamento completato per un totale di € ${this.cartTotal}`);
+      alert(`Payment completed for a total of € ${this.cartTotal}`);
       this.clearCart();
     },
 
@@ -51,14 +51,14 @@ export default {
           .then(response => {
             const result = response.data;
             if (result.success) {
-              alert('Pagamento completato con successo');
+              alert('Payment completed successfully');
               this.clearCart();
             } else {
-              alert('Errore nel pagamento: ' + result.message);
+              alert('Error in payment: ' + result.message);
             }
           })
           .catch(err => {
-            console.error('Errore nel processo di pagamento:', err);
+            console.error('Error in the payment process:', err);
           });
         })
         .catch(err => {
@@ -117,18 +117,18 @@ export default {
 </script>
 <template>
   <div>
-    <h1>Riepilogo Acquisti</h1>
+    <h1>Purchase Summary</h1>
     <ul>
       <li v-for="item in cart" :key="item.id">
-        {{ item.name }} - Quantità: {{ item.quantity }} - Prezzo: €
+        {{ item.name }} - Amount: {{ item.quantity }} - Price: €
         {{ item.price * item.quantity }}
       </li>
     </ul>
 
-    <h3>Totale: € {{ cartTotal }}</h3>
+    <h3>Total: € {{ cartTotal }}</h3>
 
     <button class="btn btn-primary" @click="simulatePayment">
-      Procedi al pagamento
+      Proceed to payment
     </button>
   </div>
   
