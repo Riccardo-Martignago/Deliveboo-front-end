@@ -176,7 +176,7 @@ import axios from 'axios';
                     </p>
                     <form>
                         <label for="quantity" class="form-label">Select quantity:</label>
-                        <input type="number" v-model="quantity[dish.id]" min="1" value="1">
+                        <input type="number" v-model="quantity[dish.id]" min="1" value="1" placeholder="1">
                         <button type="button" class="btn btn-success" @click="selectDish(dish)">Add to cart</button>
                     </form>
                 </div>
