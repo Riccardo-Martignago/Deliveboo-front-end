@@ -21,7 +21,25 @@ export default {
         { src: './src/img/img14.jpg', alt: 'Immagine 14' },
         { src: './src/img/img15.jpg', alt: 'Immagine 15' },
         { src: './src/img/img16.jpg', alt: 'Immagine 16' }
-      ]
+      ],
+      cards: [
+        { 
+            src: './src/img/1.jpg',
+            title:'Diventa nostro partner',
+            description:'Raggiungi più clienti con Deliveroo. Gestiamo noi la consegna, così tu puoi dedicarti a offrire i migliori piatti e prodotti.',
+        },
+        { 
+            src: './src/img/2.jpg',
+            title: 'Consegna con noi',
+            description:'La libertà di consegnare dove e quando vuoi, con ottimi guadagni, convenzioni e sconti riservati a te.'
+        },
+        { 
+            src: './src/img/3.jpg',
+            title:'Deliveboo for Work',
+            description:'Da pranzi aziendali a budget personalizzati per i dipendenti, possiamo offrire la soluzione giusta per qualsiasi esigenza.'
+        },
+        
+      ],
     };
   }
 }
@@ -57,7 +75,7 @@ export default {
     </div>
   </div>
 
-  <div class="row d-flex container">
+  <div class="row d-flex container pt-5 pb-5">
       <div class="col-sm-10 posizione">
         <h1>
           Segui gli ordini passo passo
@@ -71,6 +89,16 @@ export default {
       </div>
     </div>
 
+    <div class="d-flex justify-content-center work">
+        <div class="cards d-flex justify-content-center">
+            <div v-for="(card, index) in cards" :key="index">
+                <img :src="card.src" alt="">
+                <h1> {{ card.title }}</h1>
+                <p> {{ card.description }}</p>
+            </div>
+        </div>
+      </div>
+
       
   </main>
 </template>
@@ -79,7 +107,7 @@ export default {
 
 .description{
     margin-top: 130px;
-    padding: 5rem 10rem 5rem 5rem;
+    padding: 2rem 10rem 5rem 5rem;
     
 
     h1{
@@ -97,7 +125,7 @@ export default {
   }
 
   .posizione{
-    padding: 5rem 20rem 5rem 5rem;
+    padding: 2rem 20rem 5rem 8rem;
 
     h1{
       font-size: 70px;
@@ -114,9 +142,9 @@ export default {
 
     img{
       width: 600px;
-      margin-top: 7rem;
+      margin-top: 5rem;
       background-color: white;
-      margin-left: 8rem;
+      margin-left: 6rem;
     }
 
   
@@ -137,7 +165,7 @@ export default {
   .scroll-content {
     display: flex;
     flex-direction: row;
-    animation: scroll 20s linear infinite;
+    animation: scroll 40s linear infinite;
 
     .img-scroll {
       border-radius: 25px;
@@ -160,6 +188,33 @@ export default {
   }
 }
 
+.work{
+  img{
+      width: 480px;
+      height: 450px;
+      border-radius: 30px;
+  }
+  
+  
+  
+  .cards>div{
+      width: 30%;
+      padding: 3rem;
+  
+      h1{
+          font-size: 35px;
+          color:  rgb(134, 181, 222);
+          font-weight: bold;
+          padding-top: 1rem;
+      }
+  
+      p{
+          font-size: 20px;
+          padding-top: 1rem;
+      }
+  }
+
+}
 
 
 

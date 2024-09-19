@@ -45,33 +45,46 @@ export default {
                 ...restaurant,
                 typologyId: [typology.id],
                 typologyName: [typology.name],
-              });
-            }
-          });
-        }
-      });
+              };
+            });
+          })
+           this.restaurantsWithTypology = Array.from(restaurantMap.values());
+          })
+          .catch(function (error){
+            console.log(error);
+          })
+        },
+        getImageUrl(photoPath) {
+          
+          return `http://127.0.0.1:8000/uploads/${photoPath}`;
+        },
+        getImageStore(photoPath){
+          return `http://127.0.0.1:8000/storage/${photoPath}`;
+        },  
+        selectRestaurant(restaurant) {
+        localStorage.setItem('userId', restaurant.id);
+        localStorage.setItem('name', restaurant.name);
+        localStorage.setItem('email', restaurant.email);
+        localStorage.setItem('photo', restaurant.photo);
+        localStorage.setItem('piva', restaurant.piva);
+        localStorage.setItem('adress', restaurant.adress);
+        
+        console.log('Data saved to localStorage:', {
+          name: restaurant.name,
+          email: restaurant.email,
+          photo: restaurant.photo,
+          piva: restaurant.piva,
+          adress: restaurant.adress
+        });
 
-      this.restaurantsWithTypology = Array.from(restaurantMap.values());
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-},
-    getImageUrl(photoPath) {
-      return `http://127.0.0.1:8000/uploads/${photoPath}`;
-    },
-    getImageStore(photoPath) {
-      return `http://127.0.0.1:8000/storage/${photoPath}`;
-    },
-    selectRestaurant(restaurant) {
-      localStorage.setItem('userId', restaurant.id);
-      window.location.href = 'dish';
-    },
-  },
-  created() {
-    this.getRestaurants();
-  },
-};
+        window.location.href = 'dish';
+      },
+      },
+      created(){
+
+        this.getRestaurants();
+      }
+    }
 </script>
 
 <template>
