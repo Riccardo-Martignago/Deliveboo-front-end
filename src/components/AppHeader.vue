@@ -23,60 +23,14 @@ export default{
                     name: "shop"
                 },
             ],
-            user: null
         };
     },
     methods:{
-        async checkAuth(){
-            try{
-                const response = await axios.get('http://127.0.0.1:8000/api/user', {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    }
-                });
-
-            const loggedInUserId = localStorage.getItem('userId');
-            if(loggedInUserId){
-                this.user = response.data.data.find(user => user.id === parseInt(loggedInUserId));
-            }else{
-                this.user= null;
-            }
-            } catch (error) {
-                console.error('User not authenticated', error);
-            }
-            },
-        async handleLogout(){
-            try {
-                localStorage.removeItem('token');
-                this.user = null;
-                this.$router.push({ name: 'login' });
-            } catch (error){
-                console.error('Error logging out', error);
-            }
-        },
         goToDashboard(){
-            window.location.href = 'http://127.0.0.1:8000/home';
+            window.location.href = 'http://127.0.0.1:8000/login';
         }
     },
-    mounted(){
-        this.checkAuth();
-    }
 };
-
-        /* created(){
-            this.checkAuth();
-        },
-        methods:{
-            checkAuth(){
-                axios.get('http://localhost:8000/api/user',{withCredentials: true})
-                .then(response => {
-                    this.user = response.data;
-                })
-                .catch(error => {
-                    console.error('User not authenticated', error);
-                })
-            }
-        }*/
 </script>
 
 <template>
@@ -95,20 +49,9 @@ export default{
                     </li>
                 </ul>
                 <ul class="col-sm-6">
-                    <li v-if="user">
-                        <span>Welcome, {{ user.name }}</span>
-                    </li>
-                    <li v-else>
-                        <router-link :to="{ name: 'login' }">
-                            Login
-                        </router-link>
-                    </li>
-                    <li v-if="user">
+                    <li>
                         <!-- Bottone per il Dashboard -->
                         <button @click="goToDashboard">Dashboard</button>
-                    </li>
-                    <li v-if="user">
-                        <button @click="handleLogout">Logout</button>
                     </li>
                 </ul>
             </nav>
