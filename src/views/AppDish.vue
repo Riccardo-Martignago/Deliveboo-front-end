@@ -203,7 +203,7 @@ import axios from 'axios';
                             <input 
                                 type="number" 
                                 v-model="quantity[dish.id]" 
-                                min="0" 
+                                min="1" 
                                 value="1" 
                                 class="text-center border border-0"
                                 style="width: 50px;" 
