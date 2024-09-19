@@ -3,111 +3,136 @@ import axios from 'axios';
       export default {
         
         data() {
-          return{
-            dishes: [],
-            cart:[],
-            cartTotal: 0,
-            quantity: {},
-            restaurantInfo: {
-                name: '',
-                photo: '',
-                adress: '',
-                piva: '',
-                email: '',
-            },
-            
-          }
+            return{
+                dishes: [],
+                cart:[],
+                cartTotal: 0,
+                quantity: {},
+                currentRestaurantId: null,  
+                showModal: false,           
+                selectedDish: null,
+                restaurantInfo: {
+                    name: '',
+                    photo: '',
+                    adress: '',
+                    piva: '',
+                    email: '',
+                },  
+            }
         },
         methods:{
-            getRestaurantInfo() {
-            this.restaurantInfo.name = localStorage.getItem('name');
-            this.restaurantInfo.photo = localStorage.getItem('photo');
-            this.restaurantInfo.adress = localStorage.getItem('adress');
-            this.restaurantInfo.piva = localStorage.getItem('piva');
-            this.restaurantInfo.email = localStorage.getItem('email');
-            
-            console.log('Restaurant Info Loaded:', {
-                name: this.name,
-                photo: this.photo,
-                adress: this.adress,
-                piva: this.piva,
-                email: this.email
-            });
-            },
-
-
-          getDishes(){
+                getRestaurantInfo() {
+                this.restaurantInfo.name = localStorage.getItem('name');
+                this.restaurantInfo.photo = localStorage.getItem('photo');
+                this.restaurantInfo.adress = localStorage.getItem('adress');
+                this.restaurantInfo.piva = localStorage.getItem('piva');
+                this.restaurantInfo.email = localStorage.getItem('email');
+                
+                console.log('Restaurant Info Loaded:', {
+                    name: this.name,
+                    photo: this.photo,
+                    adress: this.adress,
+                    piva: this.piva,
+                    email: this.email
+                });
+                },
+            getDishes(){
                 this.userId = localStorage.getItem('userId');
 
                 if (!this.userId) {
-                console.error('Restaurant not found');
-                return;
+                    console.error('Restaurant not found');
+                    return;
                 }
                 axios.get('http://127.0.0.1:8000/api/dishes', {
-                params:{
-                }
-            })
-            .then((response) => {
-                    console.log(response.data.data);
-                    this.dishes = response.data.data.filter((dish) => dish.user_id === parseInt(this.userId));
+                    params:{
+                    }
+                })
+                .then((response) => {
+                        console.log(response.data.data);
+                        this.dishes = response.data.data.filter((dish) => dish.user_id === parseInt(this.userId));
                 })
                 .catch(function (error){
                     console.log(error);
                 })
             },
-            getImageUrl(photoPath) {
-                return `http://127.0.0.1:8000/uploads/${photoPath}`;
-            },
-                selectDish(dish) {
+        getImageUrl(photoPath) {
+            return `http://127.0.0.1:8000/uploads/${photoPath}`;
+        },
+            selectDish(dish) {
+                const quant = this.quantity[dish.id];  
+                if (this.cart.length > 0 && this.currentRestaurantId !== dish.user_id) {
+                    this.selectedDish = { ...dish, quantity: quant };
+                    this.showModal = true;
+                } else {
+                    this.addDishToCart(dish, quant);
+                }
+            },  
+            addDishToCart(dish) {
                 const quant = this.quantity[dish.id];
+                const existingDish = this.cart.find(item => item.id === dish.id);
 
-                    const existingDish = this.cart.find(item => item.id === dish.id);
+                if (existingDish) {
+                    existingDish.quantity += quant;
+                } else {
+                    this.cart.push({
+                        id: dish.id,
+                        name: dish.name,
+                        price: dish.price,
+                        quantity: quant
+                    });
+                }
+                    if (!this.currentRestaurantId) {
+                    this.currentRestaurantId = dish.user_id;
+                }
 
-                    if (existingDish) {
-                        existingDish.quantity += quant;
-                    } else {
-                        this.cart.push({
-                            id: dish.id,
-                            name: dish.name,
-                            price: dish.price,
-                            quantity: quant
-                        });
-                    }
-                    this.saveCartToLocalStorage();
-
-                    this.calculateCartTotal();
-                },
-
-                saveCartToLocalStorage() {
-                    localStorage.setItem('cart', JSON.stringify(this.cart));
-                },
-
-                calculateCartTotal() {
-                    this.cartTotal = this.cart.reduce((total, item) => {
-                        return total + item.price * item.quantity;
-                    }, 0);
-                },
-            },
-            created() {
-                this.getRestaurantInfo();
-                this.getDishes();
-                this.loadCartFromLocalStorage();
+                this.showModal = false;  
+                this.saveCartToLocalStorage();
                 this.calculateCartTotal();
             },
-            watch: {
-                cart: {
-                handler() {
-                    this.calculateCartTotal();
-                },
-                deep: true
+            saveCartToLocalStorage() {
+                console.log("Cart: ", this.cart);
+                localStorage.setItem('cart', JSON.stringify(this.cart));
+            },
+            loadCartFromLocalStorage() {
+                const savedCart = localStorage.getItem('cart');
+                if (savedCart) {
+                    this.cart = JSON.parse(savedCart);
+                    console.log("Carrello caricato: ", this.cart);
                 }
+                else{
+                    console.log("Nessun carrello trovato nel localStorage.");
+                }
+                this.calculateCartTotal();
             },
-            created(){
-                this.getRestaurantInfo();
-                this.getDishes();
+            calculateCartTotal() {
+                this.cartTotal = this.cart.reduce((total, item) => {
+                    return total + item.price * item.quantity;
+                }, 0);
             },
-        }
+            clearCartAndAddDish() {
+                this.cart = [];
+                this.addDishToCart(this.selectedDish, this.selectedDish.quantity);
+                this.selectedDish = null;
+                this.currentRestaurantId = this.selectedDish.user_id;
+                this.saveCartToLocalStorage();
+            },
 
+        },
+        created() {
+            this.getDishes();
+            this.loadCartFromLocalStorage();
+            this.calculateCartTotal();
+            this.getRestaurantInfo();
+        },
+        watch: {
+            cart: {
+            handler() {
+                this.calculateCartTotal();
+            },
+            deep: true
+            }
+        },
+    }
 
 </script>
 
@@ -152,7 +177,14 @@ import axios from 'axios';
             </div>
         </div>
     </div>
-
+    <div v-if="showModal" class="modal-backdrop">
+        <div class="modal-content">
+            <h4>Attenzione</h4>
+            <p>Hai già piatti del ristorante A nel carrello. Vuoi cancellare il carrello e aggiungere piatti del ristorante B?</p>
+            <button @click="showModal = false" class="btn btn-secondary">Mantieni il carrello</button>
+            <button @click="clearCartAndAddDish" class="btn btn-danger">Cancella e aggiungi</button>
+        </div>
+    </div>
 </template>
 
 <style>
@@ -193,5 +225,22 @@ div.zeroauto{
     .price{
         font-size:xx-large;
     }
- }
+    }
+    .modal-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .modal-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+    }
 </style>

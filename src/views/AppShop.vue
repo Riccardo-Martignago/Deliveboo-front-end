@@ -160,8 +160,8 @@ export default {
 </template>
 
 <style scoped>
-   div{
+  div{
     padding-top: 150px;
-   }
+  }
 </style>
 
