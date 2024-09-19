@@ -83,6 +83,7 @@ import axios from 'axios';
                 }
                     if (!this.currentRestaurantId) {
                     this.currentRestaurantId = dish.user_id;
+                    localStorage.setItem('currentRestaurantId', this.currentRestaurantId);
                 }
 
                 this.showModal = false;  
@@ -122,6 +123,7 @@ import axios from 'axios';
                 this.addDishToCart(this.selectedDish, this.selectedDish.quantity);
                 this.selectedDish = null;
                 this.currentRestaurantId = this.selectedDish.user_id;
+                localStorage.setItem('currentRestaurantId', this.currentRestaurantId);
                 this.saveCartToLocalStorage();
             },
 
@@ -131,6 +133,10 @@ import axios from 'axios';
             this.loadCartFromLocalStorage();
             this.calculateCartTotal();
             this.getRestaurantInfo();
+            const savedRestaurantId = localStorage.getItem('currentRestaurantId');
+                if (savedRestaurantId) {
+                    this.currentRestaurantId = parseInt(savedRestaurantId);
+                }
         },
         watch: {
             cart: {
@@ -197,7 +203,7 @@ import axios from 'axios';
                             <input 
                                 type="number" 
                                 v-model="quantity[dish.id]" 
-                                min="0" 
+                                min="1" 
                                 value="1" 
                                 class="text-center border border-0"
                                 style="width: 50px;" 

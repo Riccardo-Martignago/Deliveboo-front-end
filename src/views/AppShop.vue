@@ -34,6 +34,7 @@ export default {
       this.cart = [];
       localStorage.removeItem('cart');
       this.calculateCartTotal();
+      localStorage.removeItem('currentRestaurantId');
     },
 
     // Metodo per mandare i dati della carta a Braintree
