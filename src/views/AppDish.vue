@@ -111,12 +111,12 @@ import axios from 'axios';
                 }, 0);
             },
                 decreaseQuantity(dishId) {
-                    if (this.quantity[dishId] > 1) {
+                    if (this.quantity[dishId] > 0) {
                     this.quantity[dishId]--;
                     }
                 },
                 increaseQuantity(dishId) {
-                    this.quantity[dishId] = (this.quantity[dishId] || 1) + 1;
+                    this.quantity[dishId] = (this.quantity[dishId] || 0) + 1;
                 },
             clearCartAndAddDish() {
                 this.cart = [];
@@ -203,11 +203,12 @@ import axios from 'axios';
                             <input 
                                 type="number" 
                                 v-model="quantity[dish.id]" 
-                                min="1" 
-                                value="1" 
+                                min="0" 
+                                value="0" 
                                 class="text-center border border-0"
                                 style="width: 50px;" 
                                 readonly
+                                placeholder="0"
                             />
                             
                             <button type="button" class="btn border border-secondary me-5" @click="increaseQuantity(dish.id)">

@@ -50,8 +50,7 @@ export default{
                 </ul>
                 <ul class="col-sm-6">
                     <li>
-                        <!-- Bottone per il Dashboard -->
-                        <button @click="goToDashboard">Dashboard</button>
+                        <button class="btn my_button" @click="goToDashboard"> Account </button>
                     </li>
                 </ul>
             </nav>
@@ -59,6 +58,12 @@ export default{
 </template>
 
 <style scoped>
+    .my_button{
+        border-radius: 5rem;
+        background-color: rgb(134, 181, 222);
+        color: white;
+        text-align: center;
+    }
 
     .logo > a:nth-child(1){
         font-size: 35px;
