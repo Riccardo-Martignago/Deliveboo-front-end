@@ -25,18 +25,18 @@ export default {
       cards: [
         { 
             src: './src/img/1.jpg',
-            title:'Diventa nostro partner',
-            description:'Raggiungi più clienti con Deliveroo. Gestiamo noi la consegna, così tu puoi dedicarti a offrire i migliori piatti e prodotti.',
+            title:'Become our partner',
+            description:'Reach more customers with Deliveroo. We handle the delivery, so you can focus on offering the best dishes and products.',
         },
         { 
             src: './src/img/2.jpg',
-            title: 'Consegna con noi',
-            description:'La libertà di consegnare dove e quando vuoi, con ottimi guadagni, convenzioni e sconti riservati a te.'
+            title: 'Delivery with us',
+            description:'The freedom to deliver where and when you want, with excellent earnings, agreements and discounts reserved for you.'
         },
         { 
             src: './src/img/3.jpg',
             title:'Deliveboo for Work',
-            description:'Da pranzi aziendali a budget personalizzati per i dipendenti, possiamo offrire la soluzione giusta per qualsiasi esigenza.'
+            description:'From corporate lunches to personalized employee budgets, we can offer the right solution for any need.'
         },
         
       ],
@@ -51,10 +51,10 @@ export default {
     <div class="row d-flex container">
       <div class="col-sm-10 description">
         <h1>
-          Ordina i tuoi piatti preferiti, dove vuoi, quando vuoi
+          Order your favorite dishes, wherever you want, whenever you want!
         </h1>
         <p>
-          Scopri il nostro servizio di consegna a domicilio che ti porta il meglio della cucina direttamente a casa tua o in ufficio. Scegli tra una vasta selezione di ristoranti e gusti, dal comfort food ai piatti gourmet, e ricevi il tuo ordine in modo rapido e sicuro. Con pochi clic, il tuo pasto è già in arrivo!
+          Discover our home delivery service that brings you the best of cuisine directly to your home or office. Choose from a wide selection of restaurants and flavors, from comfort food to gourmet dishes, and receive your order quickly and safely. With just a few clicks, your meal is already on its way!
         </p>
       </div>
       <div class="col-sm-2 img">
@@ -78,10 +78,10 @@ export default {
   <div class="row d-flex container pt-5 pb-5">
       <div class="col-sm-10 posizione">
         <h1>
-          Segui gli ordini passo passo
+          Follow orders step by step
         </h1>
         <p>
-          I piatti e i prodotti che ami, consegnati in pochissimo tempo. Vedrai quando il rider ha ritirato l'ordine, che potrai seguire passo passo, e riceverai una notifica quando sarà quasi da te.
+          The dishes and products you love, delivered in no time. You'll see when the rider has picked up the order, which you can follow step by step, and you'll receive a notification when it's almost there.
         </p>
       </div>
       <div class="col-sm-2 img">

@@ -3,27 +3,27 @@ export default {
     data() {
         return {
             menuItems: [
-                "Investitori",
-                "Chi siamo",
-                "Ristoranti",
-                "Altro",
+                "Investors",
+                "About us",
+                "Restaurants",
+                "Other",
                 "Pressroom",
-                "Programmazione",
+                "Programming",
                 "Design",
-                "Lavora con noi",
-                "Diventa nostro partner"
+                "Work with us",
+                "Become our partner"
             ],
             legalItems: [
-                "Termini & Condizioni",
-                "Informativa sulla privacy",
+                "Terms & Conditions",
+                "Privacy Policy",
                 "Cookies",
-                "Classificazione dei partner",
-                "Richieste da parte delle Autorità Pubbliche"
+                "Partner Rating",
+                "Requests from Public Authorities"
             ],
             infoItems: [
-                "Contatti",
+                "Contacts",
                 "FAQ",
-                "Tipi di cucina"
+                "Types of Cuisine"
             ]
         };
     }
@@ -35,7 +35,7 @@ export default {
     <footer class="d-flex justify-content-center">
         <div class="menu">
             <h1>
-                Scopri Deliveboo
+                Discover Deliveboo
             </h1>
             <ul>
                 <li v-for="(item, index) in menuItems" :key="'menu-' + index">
@@ -45,7 +45,7 @@ export default {
         </div>
         <div class="lega">
             <h1>
-                Note legali
+                Legal notes
             </h1>
             <ul>
                 <li v-for="(item, index) in legalItems" :key="'legal-' + index">
@@ -55,7 +55,7 @@ export default {
         </div>
         <div class="info">
             <h1>
-                Aiuto
+                Help
             </h1>
             <ul>
                 <li v-for="(item, index) in infoItems" :key="'info-' + index">
