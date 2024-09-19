@@ -197,7 +197,7 @@ import axios from 'axios';
                             <input 
                                 type="number" 
                                 v-model="quantity[dish.id]" 
-                                min="1" 
+                                min="0" 
                                 value="1" 
                                 class="text-center border border-0"
                                 style="width: 50px;" 
@@ -209,7 +209,7 @@ import axios from 'axios';
                             </button>
 
                             <button type="button" class="btn border cart" @click="selectDish(dish)">
-                                <i class="fa-solid fa-cart-shopping"></i> Go to cart!
+                                <i class="fa-solid fa-cart-shopping"></i> Add to cart
                             </button>
                         </form>
                     </div>
