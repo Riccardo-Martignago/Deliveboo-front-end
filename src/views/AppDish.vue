@@ -3,39 +3,50 @@ import axios from 'axios';
       export default {
         
         data() {
-          return{
-            dishes: [],
-            cart:[],
-            cartTotal: 0,
-            quantity: {}
-          }
+            return{
+                dishes: [],
+                cart:[],
+                cartTotal: 0,
+                quantity: {},
+                currentRestaurantId: null,  
+                showModal: false,           
+                selectedDish: null,  
+            }
         },
         methods:{
-          getDishes(){
-            this.userId = localStorage.getItem('userId');
+            getDishes(){
+                this.userId = localStorage.getItem('userId');
 
-            if (!this.userId) {
-              console.error('Restaurant not found');
-              return;
-            }
-            axios.get('http://127.0.0.1:8000/api/dishes', {
-              params:{
-            }
-        })
-        .then((response) => {
-                console.log(response.data.data);
-                this.dishes = response.data.data.filter((dish) => dish.user_id === parseInt(this.userId));
-            })
-            .catch(function (error){
-                console.log(error);
-            })
-        },
+                if (!this.userId) {
+                    console.error('Restaurant not found');
+                    return;
+                }
+                axios.get('http://127.0.0.1:8000/api/dishes', {
+                    params:{
+                    }
+                })
+                .then((response) => {
+                        console.log(response.data.data);
+                        this.dishes = response.data.data.filter((dish) => dish.user_id === parseInt(this.userId));
+                })
+                .catch(function (error){
+                    console.log(error);
+                })
+            },
         getImageUrl(photoPath) {
             return `http://127.0.0.1:8000/uploads/${photoPath}`;
         },
             selectDish(dish) {
-            const quant = this.quantity[dish.id];
-
+                const quant = this.quantity[dish.id];  
+                if (this.cart.length > 0 && this.currentRestaurantId !== dish.user_id) {
+                    this.selectedDish = { ...dish, quantity: quant };
+                    this.showModal = true;
+                } else {
+                    this.addDishToCart(dish, quant);
+                }
+            },  
+            addDishToCart(dish) {
+                const quant = this.quantity[dish.id];
                 const existingDish = this.cart.find(item => item.id === dish.id);
 
                 if (existingDish) {
@@ -48,20 +59,42 @@ import axios from 'axios';
                         quantity: quant
                     });
                 }
-                this.saveCartToLocalStorage();
+                    if (!this.currentRestaurantId) {
+                    this.currentRestaurantId = dish.user_id;
+                }
 
+                this.showModal = false;  
+                this.saveCartToLocalStorage();
                 this.calculateCartTotal();
             },
-
             saveCartToLocalStorage() {
+                console.log("Cart: ", this.cart);
                 localStorage.setItem('cart', JSON.stringify(this.cart));
             },
-
+            loadCartFromLocalStorage() {
+                const savedCart = localStorage.getItem('cart');
+                if (savedCart) {
+                    this.cart = JSON.parse(savedCart);
+                    console.log("Carrello caricato: ", this.cart);
+                }
+                else{
+                    console.log("Nessun carrello trovato nel localStorage.");
+                }
+                this.calculateCartTotal();
+            },
             calculateCartTotal() {
                 this.cartTotal = this.cart.reduce((total, item) => {
                     return total + item.price * item.quantity;
                 }, 0);
-            }
+            },
+            clearCartAndAddDish() {
+                this.cart = [];
+                this.addDishToCart(this.selectedDish, this.selectedDish.quantity);
+                this.selectedDish = null;
+                this.currentRestaurantId = this.selectedDish.user_id;
+                this.saveCartToLocalStorage();
+            },
+
         },
         created() {
             this.getDishes();
@@ -75,9 +108,6 @@ import axios from 'axios';
             },
             deep: true
             }
-        },
-        created(){
-            this.getDishes();
         },
     }
 
@@ -106,10 +136,17 @@ import axios from 'axios';
             </div>
         </div>
     </div>
-
+    <div v-if="showModal" class="modal-backdrop">
+        <div class="modal-content">
+            <h4>Attenzione</h4>
+            <p>Hai già piatti del ristorante A nel carrello. Vuoi cancellare il carrello e aggiungere piatti del ristorante B?</p>
+            <button @click="showModal = false" class="btn btn-secondary">Mantieni il carrello</button>
+            <button @click="clearCartAndAddDish" class="btn btn-danger">Cancella e aggiungi</button>
+        </div>
+    </div>
 </template>
 
-<style>
+<style lang="scss" scoped>
 div.zeroauto{
     margin: 0 auto;
     font-size: 20px;
@@ -132,5 +169,22 @@ div.zeroauto{
     .price{
         font-size:xx-large;
     }
- }
+    }
+    .modal-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .modal-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+    }
 </style>
