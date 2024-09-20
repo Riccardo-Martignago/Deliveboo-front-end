@@ -28,22 +28,64 @@ export default{
     },
     methods:{
         goToDashboard(){
-            window.location.href = 'http://127.0.0.1:8000/login';
+            window.location.href = 'http://127.0.0.1:8000/';
         },
         updateCartItemCount() {
-        // Recupera il carrello dal localStorage
-        const cart = JSON.parse(localStorage.getItem('cart')) || [];
-        // Somma tutte le quantità dei piatti
-        this.cartItemCount = cart.reduce((total, item) => {
-            return total + item.quantity;
-        }, 0);
-    },
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            this.cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
+            this.$forceUpdate();  // Forza il rendering
+        },
+        addToCart(dish) {
+            // Logica per aggiungere il piatto al carrello
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const existingItem = cart.find(item => item.id === dish.id);
+
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({ ...dish, quantity: 1 });
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            console.log('Aggiunto al carrello, emetto l\'evento cart-updated');
+            // Emetti un evento personalizzato che informa del cambiamento nel carrello
+            window.dispatchEvent(new Event('cart-updated')); // Alternativa per eventi globali
+        },
+        removeFromCart(dish) {
+            // Logica per rimuovere il piatto dal carrello
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const existingItemIndex = cart.findIndex(item => item.id === dish.id);
+
+            if (existingItemIndex !== -1) {
+                cart[existingItemIndex].quantity--;
+                if (cart[existingItemIndex].quantity <= 0) {
+                    cart.splice(existingItemIndex, 1);
+                }
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            console.log('Rimosso dal carrello, emetto l\'evento cart-updated');
+            // Emetti l'evento di aggiornamento del carrello
+            window.dispatchEvent(new Event('cart-updated')); // Alternativa per eventi globali
+    }
     },
     mounted() {
             console.log('Header montato, controllo il carrello...');// Aggiornamento del numero di articoli nel carrello quando il componente viene montato
-            this.updateCartItemCount();
+            window.addEventListener('cart-updated', () => {
+                console.log('Evento cart-updated ricevuto');
+                this.updateCartItemCount();
+            });
             this.$forceUpdate();
+            // Ascolta l'evento 'cart-updated'
+            window.addEventListener('cart-updated', this.updateCartItemCount);
+            window.addEventListener('storage', this.updateCartItemCount);
         },
+        beforeDestroy() {
+        // Rimuovi il listener quando il componente viene distrutto
+        window.removeEventListener('cart-updated', this.updateCartItemCount);
+        window.removeEventListener('storage', this.updateCartItemCount);
+},
+        
 };
 </script>
 
@@ -55,6 +97,7 @@ export default{
                 </router-link>
             </div>
             <nav class="col-sm-9 d-flex align-items-center justify-content-end">
+                
                 <ul class="col-sm-4">
                     <li v-for="link in linksName" :key="link.name">
                         <router-link :to="{ name: link.name }">

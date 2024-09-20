@@ -89,6 +89,7 @@ import axios from 'axios';
                 this.showModal = false;  
                 this.saveCartToLocalStorage();
                 this.calculateCartTotal();
+                window.dispatchEvent(new Event('cart-updated'));
             },
             saveCartToLocalStorage() {
                 console.log("Cart: ", this.cart);

@@ -17,6 +17,7 @@ export default {
       if (savedCart) {
         this.cart = JSON.parse(savedCart);
       }
+      window.dispatchEvent(new Event('cart-updated'));
     },
 
     calculateCartTotal() {
@@ -28,6 +29,7 @@ export default {
     simulatePayment() {
       alert(`Payment completed for a total of € ${this.cartTotal}`);
       this.clearCart();
+      window.dispatchEvent(new Event('cart-updated'));
     },
 
     clearCart() {
@@ -35,28 +37,30 @@ export default {
       localStorage.removeItem('cart');
       this.calculateCartTotal();
       localStorage.removeItem('currentRestaurantId');
+      window.dispatchEvent(new Event('cart-updated'));
     },
 
     updateItemQuantity(itemId, increment) {
       const item = this.cart.find(item => item.id === itemId);
       if (item) {
-        // Incrementa o decrementa la quantità in base al valore di 'increment'
         item.quantity += increment;
-        // Impedisci quantità negative
         if (item.quantity <= 0) {
-          this.removeItemFromCart(itemId); // Se la quantità è 0 o meno, rimuovi l'elemento
+          this.removeItemFromCart(itemId);
+        } else {
+          localStorage.setItem('cart', JSON.stringify(this.cart));
+          this.calculateCartTotal();
+          this.$emit('cartUpdated', this.cart);  // Emissione evento
         }
-        // Aggiorna il carrello nel LocalStorage
-        localStorage.setItem('cart', JSON.stringify(this.cart));
-        // Ricalcola il totale del carrello
-        this.calculateCartTotal();
       }
+      window.dispatchEvent(new Event('cart-updated'));
     },
 
     removeItemFromCart(itemId) {
       this.cart = this.cart.filter(item => item.id !== itemId);
-      localStorage.setItem('cart', JSON.stringify(this.cart)); // Aggiorna il carrello nel LocalStorage
-      this.calculateCartTotal(); // Ricalcola il totale
+      localStorage.setItem('cart', JSON.stringify(this.cart));
+      this.calculateCartTotal();
+      this.$emit('cartUpdated', this.cart);  // Emissione evento
+      window.dispatchEvent(new Event('cart-updated'));
     },
 
     // Metodo per mandare i dati della carta a Braintree
