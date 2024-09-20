@@ -73,16 +73,20 @@ export default {
         return;
       }
 
+      // Assicurati che i dati necessari siano presenti
+      const userId = localStorage.getItem('userId'); // Assicurati di avere un modo per ottenere l'ID dell'utente
+
+
       if(this.hostedFieldInstance) {
         this.hostedFieldInstance.tokenize().then(payload => {
           this.nonce = payload.nonce;
 
           const orderData = {
-            nonce: this.nonce,
-            totalAmount: this.cartTotal,
-            restaurantId: localStorage.getItem('currentRestaurantId'),  // Recupera l'ID del ristorante dal localStorage
+            paymentMethodNonce: this.nonce,
+            totalAmount: this.cartTotal, // Modificato per corrispondere al back-end
+            restaurantId: localStorage.getItem('currentRestaurantId'),
             dishes: this.cart.map(item => ({
-              dishId: item.id,
+              dish_id: item.id,
               quantity: item.quantity
             }))
           };
