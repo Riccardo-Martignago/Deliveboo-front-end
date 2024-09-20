@@ -9,6 +9,7 @@ export default {
       hostedFieldInstance: false,
       nonce: "",
       error: "",
+      isLoading: false,
     };
   },
   methods: {
@@ -33,11 +34,13 @@ export default {
     },
 
     clearCart() {
-      this.cart = [];
-      localStorage.removeItem('cart');
-      this.calculateCartTotal();
-      localStorage.removeItem('currentRestaurantId');
-      window.dispatchEvent(new Event('cart-updated'));
+      if (confirm("Are you sure you want to clear the cart?")) {
+        this.cart = [];
+        localStorage.removeItem('cart');
+        this.calculateCartTotal();
+        localStorage.removeItem('currentRestaurantId');
+        window.dispatchEvent(new Event('cart-updated'));
+      }
     },
 
     updateItemQuantity(itemId, increment) {
@@ -65,15 +68,28 @@ export default {
 
     // Metodo per mandare i dati della carta a Braintree
     payWithCreditCard() {
+      if (this.cartTotal === 0) {
+        alert("Your cart is empty.");
+        return;
+      }
+
       if(this.hostedFieldInstance) {
         this.hostedFieldInstance.tokenize().then(payload => {
           this.nonce = payload.nonce;
 
+          const orderData = {
+            nonce: this.nonce,
+            totalAmount: this.cartTotal,
+            restaurantId: localStorage.getItem('currentRestaurantId'),  // Recupera l'ID del ristorante dal localStorage
+            dishes: this.cart.map(item => ({
+              dishId: item.id,
+              quantity: item.quantity
+            }))
+          };
+          
+          console.log(orderData);
           // Invia il nonce e l'importo al server usando axios
-          axios.post('http://localhost:8000/api/payment/process', {
-            paymentMethodNonce: this.nonce,
-            amount: this.cartTotal
-          })
+          axios.post('http://localhost:8000/api/payment/process', orderData)
           .then(response => {
             const result = response.data;
             if (result.success) {
@@ -85,11 +101,14 @@ export default {
           })
           .catch(err => {
             console.error('Error in the payment process:', err);
+            this.error = err.message;
+            this.isLoading = false;  // Ferma caricamento
           });
         })
         .catch(err => {
           console.error(err);
           this.error = err.message;
+          this.isLoading = false;  // Ferma caricamento
         });
       }
     }
@@ -147,53 +166,59 @@ export default {
       <li v-for="item in cart" :key="item.id">
         {{ item.name }} - Amount: {{ item.quantity }} - Price: €
         {{ item.price * item.quantity }}
-        <!-- Bottoni per modificare la quantità del piatto -->
         <button @click="updateItemQuantity(item.id, -1)">-</button>
         <button @click="updateItemQuantity(item.id, 1)">+</button>
-        
-        <!-- Bottone per rimuovere l'elemento -->
-        <button @click="removeItemFromCart(item.id)">Rimuovi</button>
+        <button @click="removeItemFromCart(item.id)">Remove</button>
       </li>
     </ul>
 
     <h3>Total: € {{ cartTotal }}</h3>
 
-    <button class="btn btn-primary" @click="simulatePayment">
+    <button class="btn btn-primary" @click="simulatePayment" :disabled="isLoading">
       Proceed to payment
     </button>
-  </div>
-  
-  <form>
-    <div class="alert alert-success" v-if="nonce">
-      Successfully generated nonce.
-    </div>
-    <div class="alert alert-danger" v-else-if="error">
-      {{ error }}
-    </div>
-      <hr />
-    <div class="form-group">
+
+    <!-- Modulo per Braintree Hosted Fields -->
+    <form>
+      <div v-if="nonce" class="alert alert-success">Payment nonce generated successfully.</div>
+      <div v-if="error" class="alert alert-danger">{{ error }}</div>
+
+      <div class="form-group">
         <label>Credit Card Number</label>
         <div id="creditCardNumber" class="form-control"></div>
-    </div>
-    <div class="form-group">
+      </div>
+      <div class="form-group">
         <div class="row">
-            <div class="col-6">
-                <label>Expire Date</label>
-                <div id="expireDate" class="form-control"></div>
-            </div>
-            <div class="col-6">
-                <label>CVV</label>
-                <div id="cvv" class="form-control"></div>
-            </div>
+          <div class="col-6">
+            <label>Expire Date</label>
+            <div id="expireDate" class="form-control"></div>
+          </div>
+          <div class="col-6">
+            <label>CVV</label>
+            <div id="cvv" class="form-control"></div>
+          </div>
         </div>
-    </div>
-    <button class="btn btn-primary btn-block" @click.prevent="payWithCreditCard">Pay with Credit Card</button>
-</form>
+      </div>
+
+      <button class="btn btn-primary btn-block" @click.prevent="payWithCreditCard" :disabled="isLoading">
+        Pay with Credit Card
+      </button>
+    </form>
+
+    <!-- Indicatore di caricamento -->
+    <div v-if="isLoading" class="loading-spinner">Processing payment...</div>
+  </div>
 </template>
 
 <style scoped>
   div{
     padding-top: 150px;
   }
+  .loading-spinner {
+  text-align: center;
+  font-size: 18px;
+  margin-top: 20px;
+  color: blue;
+}
 </style>
 
