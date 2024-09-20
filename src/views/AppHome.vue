@@ -45,7 +45,6 @@ export default {
 }
 </script>
 
-
 <template>
   <main>
     <div class="row d-flex container">
@@ -63,19 +62,19 @@ export default {
     </div>
 
     <div class="ristoranti">
-    <div class="scroll-container flex-wrap">
-      <div class="scroll-content col-sm-12">
-        <img v-for="(image, index) in primaFilaImages" :key="index" :src="image.src" :alt="image.alt" class="img-scroll">
-        <img v-for="(image, index) in primaFilaImages" :key="index" :src="image.src" :alt="image.alt" class="img-scroll">
+      <div class="scroll-container flex-wrap">
+        <div class="scroll-content col-sm-12">
+          <img v-for="(image, index) in primaFilaImages" :key="index" :src="image.src" :alt="image.alt" class="img-scroll">
+          <img v-for="(image, index) in primaFilaImages" :key="index" :src="image.src" :alt="image.alt" class="img-scroll">
         </div>
         <div class="scroll-content col-sm-12">
           <img v-for="(image, index) in secondaFilaImages" :key="index" :src="image.src" :alt="image.alt" class="img-scroll">
           <img v-for="(image, index) in secondaFilaImages" :key="index" :src="image.src" :alt="image.alt" class="img-scroll">
         </div>
+      </div>
     </div>
-  </div>
 
-  <div class="row d-flex container pt-5 pb-5">
+    <div class="row d-flex container pt-5 pb-5">
       <div class="col-sm-10 posizione">
         <h1>
           Follow orders step by step
@@ -90,94 +89,82 @@ export default {
     </div>
 
     <div class="d-flex justify-content-center work">
-        <div class="cards d-flex justify-content-center">
-            <div v-for="(card, index) in cards" :key="index">
-                <img :src="card.src" alt="">
-                <h1> {{ card.title }}</h1>
-                <p> {{ card.description }}</p>
-            </div>
+      <div class="cards d-flex justify-content-center flex-wrap">
+        <div v-for="(card, index) in cards" :key="index">
+          <img :src="card.src" alt="">
+          <h1>{{ card.title }}</h1>
+          <p>{{ card.description }}</p>
         </div>
       </div>
-
-      
+    </div>
   </main>
 </template>
 
-<style>
+<style scoped>
+.description {
+  margin-top: 130px;
+  padding: 2rem 10rem 5rem 5rem;
 
-.description{
-    margin-top: 130px;
-    padding: 2rem 10rem 5rem 5rem;
-    
-
-    h1{
-      font-size: 70px;
-      color: rgb(134, 181, 222);
-      font-weight: bold;
-    }
-
-    p{
-      font-size: 22px;
-      padding: 2rem 10rem 0rem 0rem;
-    }
-
-    
+  h1 {
+    font-size: 70px;
+    color: rgb(134, 181, 222);
+    font-weight: bold;
   }
 
-  .posizione{
-    padding: 2rem 20rem 5rem 8rem;
-
-    h1{
-      font-size: 70px;
-      color: rgb(134, 181, 222);
-      font-weight: bold;
-    }
-
-    p{
-      font-size: 22px;
-      padding: 2rem 10rem 0rem 0rem;
-    }
+  p {
+    font-size: 22px;
+    padding: 2rem 10rem 0 0;
   }
-  div.img{
+}
 
-    img{
-      width: 600px;
-      margin-top: 5rem;
-      background-color: white;
-      margin-left: 6rem;
-    }
+.posizione {
+  padding: 2rem 20rem 5rem 8rem;
 
-  
-    
-    
+  h1 {
+    font-size: 70px;
+    color: rgb(134, 181, 222);
+    font-weight: bold;
   }
-  
-  .ristoranti {
-  overflow: hidden; 
+
+  p {
+    font-size: 18px;
+    padding: 2rem 0rem 0 0;
+  }
+}
+
+.img {
+  img {
+    width: 100%;
+    max-width: 600px;
+    margin-top: 5rem;
+    background-color: white;
+  }
+}
+
+.ristoranti {
+  overflow: hidden;
   position: relative;
   max-width: 100%;
 }
 
-.scroll-container {      
+.scroll-container {
   display: flex;
   overflow: hidden;
-
-  .scroll-content {
-    display: flex;
-    flex-direction: row;
-    animation: scroll 40s linear infinite;
-
-    .img-scroll {
-      border-radius: 25px;
-      width: 250px;
-      height: 250px;
-      margin-right: 10px;
-      padding: 0.5rem;
-    }
-  }
 }
 
+.scroll-content {
+  display: flex;
+  flex-direction: row;
+  animation: scroll 40s linear infinite;
+}
 
+.img-scroll {
+  border-radius: 25px;
+  width: 250px;
+  height: 250px;
+  margin-right: 10px;
+  padding: 0.5rem;
+}
 
 @keyframes scroll {
   0% {
@@ -188,37 +175,118 @@ export default {
   }
 }
 
-.work{
-  img{
-      width: 480px;
-      height: 450px;
-      border-radius: 30px;
-  }
-  
-  
-  
-  .cards>div{
-      width: 30%;
-      padding: 3rem;
-  
-      h1{
-          font-size: 35px;
-          color:  rgb(134, 181, 222);
-          font-weight: bold;
-          padding-top: 1rem;
-      }
-  
-      p{
-          font-size: 20px;
-          padding-top: 1rem;
-      }
-  }
-
+.work img {
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+  border-radius: 30px;
 }
 
+.cards > div {
+  width: 30%;
+  padding: 3rem;
 
+  h1 {
+    font-size: 30px;
+    color: rgb(134, 181, 222);
+    font-weight: bold;
+    padding-top: 1rem;
+  }
 
+  p {
+    font-size: 18px;
+    padding-top: 1rem;
+  }
+}
 
+@media (max-width: 1024px) {
+  .description,
+  .posizione {
+    padding: 2rem;
+    text-align: center;
 
-  
+    h1 {
+      font-size: 50px;
+    }
+
+    p {
+      font-size: 18px;
+    }
+  }
+
+  .img {
+    text-align: center;
+    img {
+      margin-left: 0;
+      margin-top: 2rem;
+    }
+  }
+
+  .scroll-content .img-scroll {
+    width: 180px;
+    height: 180px;
+  }
+
+  .work img {
+    width: 100%;
+    height: auto;
+  }
+
+  .cards > div {
+    width: 45%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .description,
+  .posizione {
+    padding: 1rem;
+    text-align: center;
+
+    h1 {
+      font-size: 40px;
+    }
+
+    p {
+      font-size: 16px;
+    }
+  }
+
+  .scroll-content .img-scroll {
+    width: 150px;
+    height: 150px;
+  }
+
+  .work img {
+    width: 100%;
+    height: auto;
+  }
+
+  .cards > div {
+    width: 100%;
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .description h1,
+  .posizione h1 {
+    font-size: 30px;
+  }
+
+  .description p,
+  .posizione p {
+    font-size: 18px;
+  }
+
+  .img img {
+    width: 80%;
+  }
+
+  .scroll-content .img-scroll {
+    width: 120px;
+    height: 120px;
+  }
+}
 </style>
