@@ -48,16 +48,13 @@ export default {
 <template>
   <main>
     <div class="row d-flex container">
-      <div class="col-sm-10 description">
+      <div class="col-sm-12 description justify-content-center">
         <h1>
           Order your favorite dishes, wherever you want, whenever you want!
         </h1>
         <p>
           Discover our home delivery service that brings you the best of cuisine directly to your home or office. Choose from a wide selection of restaurants and flavors, from comfort food to gourmet dishes, and receive your order quickly and safely. With just a few clicks, your meal is already on its way!
         </p>
-      </div>
-      <div class="col-sm-2 img">
-        <img src="../img/file.png" alt="">
       </div>
     </div>
 
@@ -75,7 +72,7 @@ export default {
     </div>
 
     <div class="row d-flex container pt-5 pb-5">
-      <div class="col-sm-10 posizione">
+      <div class="col-sm-10 posizione justify-content-center">
         <h1>
           Follow orders step by step
         </h1>
@@ -83,9 +80,7 @@ export default {
           The dishes and products you love, delivered in no time. You'll see when the rider has picked up the order, which you can follow step by step, and you'll receive a notification when it's almost there.
         </p>
       </div>
-      <div class="col-sm-2 img">
-        <img src="../img/mappa.jpg" alt="">
-      </div>
+        <img src="../img/mappa.jpg" alt="" class="mappa">
     </div>
 
     <div class="d-flex justify-content-center work">
@@ -101,6 +96,17 @@ export default {
 </template>
 
 <style scoped>
+.container{
+  margin: 0 auto;
+}
+.mappa {
+  position: absolute;
+  width: 35%;
+  left: 70rem;
+  top: 75rem;
+}
+
+
 .description {
   margin-top: 130px;
   padding: 2rem 10rem 5rem 5rem;
@@ -109,12 +115,16 @@ export default {
     font-size: 70px;
     color: rgb(134, 181, 222);
     font-weight: bold;
+    text-align: center;
   }
 
   p {
     font-size: 22px;
-    padding: 2rem 10rem 0 0;
+    padding: 2rem 0rem 0 0;
+    text-align: center;
   }
+
+
 }
 
 .posizione {
@@ -124,11 +134,13 @@ export default {
     font-size: 70px;
     color: rgb(134, 181, 222);
     font-weight: bold;
+    text-align: center;
   }
 
   p {
     font-size: 18px;
     padding: 2rem 0rem 0 0;
+    text-align: center;
   }
 }
 
@@ -191,11 +203,13 @@ export default {
     color: rgb(134, 181, 222);
     font-weight: bold;
     padding-top: 1rem;
+    text-align: center;
   }
 
   p {
     font-size: 18px;
     padding-top: 1rem;
+    text-align: center;
   }
 }
 
@@ -239,6 +253,7 @@ export default {
 }
 
 @media (max-width: 768px) {
+
   .description,
   .posizione {
     padding: 1rem;
