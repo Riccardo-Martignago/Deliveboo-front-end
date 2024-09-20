@@ -23,13 +23,27 @@ export default{
                     name: "shop"
                 },
             ],
+            cartItemCount: 0,
         };
     },
     methods:{
         goToDashboard(){
             window.location.href = 'http://127.0.0.1:8000/login';
-        }
+        },
+        updateCartItemCount() {
+        // Recupera il carrello dal localStorage
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        // Somma tutte le quantità dei piatti
+        this.cartItemCount = cart.reduce((total, item) => {
+            return total + item.quantity;
+        }, 0);
     },
+    },
+    mounted() {
+            console.log('Header montato, controllo il carrello...');// Aggiornamento del numero di articoli nel carrello quando il componente viene montato
+            this.updateCartItemCount();
+            this.$forceUpdate();
+        },
 };
 </script>
 
@@ -45,6 +59,9 @@ export default{
                     <li v-for="link in linksName" :key="link.name">
                         <router-link :to="{ name: link.name }">
                             {{ link.label }}
+                            <span v-if="link.name === 'shop' && cartItemCount > 0">
+                                    ({{ cartItemCount }})
+                            </span>
                         </router-link>
                     </li>
                 </ul>
@@ -106,6 +123,10 @@ export default{
             }
             li a:hover {
                 text-decoration: underline;
+            }
+            li a span{
+                font-weight: bold;
+                color: red;
             }
 
         }

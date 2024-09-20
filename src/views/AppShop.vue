@@ -37,6 +37,28 @@ export default {
       localStorage.removeItem('currentRestaurantId');
     },
 
+    updateItemQuantity(itemId, increment) {
+      const item = this.cart.find(item => item.id === itemId);
+      if (item) {
+        // Incrementa o decrementa la quantità in base al valore di 'increment'
+        item.quantity += increment;
+        // Impedisci quantità negative
+        if (item.quantity <= 0) {
+          this.removeItemFromCart(itemId); // Se la quantità è 0 o meno, rimuovi l'elemento
+        }
+        // Aggiorna il carrello nel LocalStorage
+        localStorage.setItem('cart', JSON.stringify(this.cart));
+        // Ricalcola il totale del carrello
+        this.calculateCartTotal();
+      }
+    },
+
+    removeItemFromCart(itemId) {
+      this.cart = this.cart.filter(item => item.id !== itemId);
+      localStorage.setItem('cart', JSON.stringify(this.cart)); // Aggiorna il carrello nel LocalStorage
+      this.calculateCartTotal(); // Ricalcola il totale
+    },
+
     // Metodo per mandare i dati della carta a Braintree
     payWithCreditCard() {
       if(this.hostedFieldInstance) {
@@ -67,7 +89,6 @@ export default {
         });
       }
     }
-
   },
   created() {
     this.loadCartFromLocalStorage();
@@ -122,6 +143,12 @@ export default {
       <li v-for="item in cart" :key="item.id">
         {{ item.name }} - Amount: {{ item.quantity }} - Price: €
         {{ item.price * item.quantity }}
+        <!-- Bottoni per modificare la quantità del piatto -->
+        <button @click="updateItemQuantity(item.id, -1)">-</button>
+        <button @click="updateItemQuantity(item.id, 1)">+</button>
+        
+        <!-- Bottone per rimuovere l'elemento -->
+        <button @click="removeItemFromCart(item.id)">Rimuovi</button>
       </li>
     </ul>
 
