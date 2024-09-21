@@ -83,6 +83,8 @@ export default {
         });
 
         this.$router.push({ name: 'dish' });
+        window.location.href = 'dish';
+
       },
       },
       created(){

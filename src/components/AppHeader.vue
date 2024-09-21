@@ -110,6 +110,7 @@ export default{
             <div class="col-3 col-md-4 d-flex">
                 <button class="btn my_button" @click="goToDashboard"> Account </button>
             </div>
+        </nav>
             <nav class="col-sm-9 d-flex align-items-center justify-content-end">
                 
                 <ul class="col-sm-4">
