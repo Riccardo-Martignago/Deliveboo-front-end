@@ -1,6 +1,6 @@
 <script>
 import axios from 'axios';
-    export default {
+      export default {
         
         data() {
             return{
@@ -89,6 +89,7 @@ import axios from 'axios';
                 this.showModal = false;  
                 this.saveCartToLocalStorage();
                 this.calculateCartTotal();
+                window.dispatchEvent(new Event('cart-updated'));
             },
             saveCartToLocalStorage() {
                 console.log("Cart: ", this.cart);
@@ -121,6 +122,7 @@ import axios from 'axios';
             clearCartAndAddDish() {
                 this.cart = [];
                 this.addDishToCart(this.selectedDish, this.selectedDish.quantity);
+                this.selectedDish = null;
                 this.currentRestaurantId = this.selectedDish.user_id;
                 localStorage.setItem('currentRestaurantId', this.currentRestaurantId);
                 this.saveCartToLocalStorage();
@@ -159,9 +161,9 @@ import axios from 'axios';
                 {{ restaurantInfo.name }}
             </h1>
             <p>
-                <span>
-                    Address:
-                </span>  {{ restaurantInfo.adress }}
+              <span>
+                Address:
+              </span>  {{ restaurantInfo.adress }}
             </p>
             <p>
                 <span>
@@ -234,6 +236,8 @@ import axios from 'axios';
 </template>
 
 <style scoped>
+
+
 
 .ristorante{
     padding-top: 150px;

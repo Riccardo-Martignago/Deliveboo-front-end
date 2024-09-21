@@ -9,6 +9,7 @@ export default {
       hostedFieldInstance: false,
       nonce: "",
       error: "",
+      isLoading: false,
     };
   },
   methods: {
@@ -17,6 +18,7 @@ export default {
       if (savedCart) {
         this.cart = JSON.parse(savedCart);
       }
+      window.dispatchEvent(new Event('cart-updated'));
     },
 
     calculateCartTotal() {
@@ -28,48 +30,70 @@ export default {
     simulatePayment() {
       alert(`Payment completed for a total of € ${this.cartTotal}`);
       this.clearCart();
+      window.dispatchEvent(new Event('cart-updated'));
     },
 
     clearCart() {
-      this.cart = [];
-      localStorage.removeItem('cart');
-      this.calculateCartTotal();
-      localStorage.removeItem('currentRestaurantId');
+      if (confirm("Are you sure you want to clear the cart?")) {
+        this.cart = [];
+        localStorage.removeItem('cart');
+        this.calculateCartTotal();
+        localStorage.removeItem('currentRestaurantId');
+        window.dispatchEvent(new Event('cart-updated'));
+      }
     },
 
     updateItemQuantity(itemId, increment) {
       const item = this.cart.find(item => item.id === itemId);
       if (item) {
-        // Incrementa o decrementa la quantità in base al valore di 'increment'
         item.quantity += increment;
-        // Impedisci quantità negative
         if (item.quantity <= 0) {
-          this.removeItemFromCart(itemId); // Se la quantità è 0 o meno, rimuovi l'elemento
+          this.removeItemFromCart(itemId);
+        } else {
+          localStorage.setItem('cart', JSON.stringify(this.cart));
+          this.calculateCartTotal();
+          this.$emit('cartUpdated', this.cart);  // Emissione evento
         }
-        // Aggiorna il carrello nel LocalStorage
-        localStorage.setItem('cart', JSON.stringify(this.cart));
-        // Ricalcola il totale del carrello
-        this.calculateCartTotal();
       }
+      window.dispatchEvent(new Event('cart-updated'));
     },
 
     removeItemFromCart(itemId) {
       this.cart = this.cart.filter(item => item.id !== itemId);
-      localStorage.setItem('cart', JSON.stringify(this.cart)); // Aggiorna il carrello nel LocalStorage
-      this.calculateCartTotal(); // Ricalcola il totale
+      localStorage.setItem('cart', JSON.stringify(this.cart));
+      this.calculateCartTotal();
+      this.$emit('cartUpdated', this.cart);  // Emissione evento
+      window.dispatchEvent(new Event('cart-updated'));
     },
 
     // Metodo per mandare i dati della carta a Braintree
     payWithCreditCard() {
+      if (this.cartTotal === 0) {
+        alert("Your cart is empty.");
+        return;
+      }
+
+      // Assicurati che i dati necessari siano presenti
+      const userId = localStorage.getItem('userId'); // Assicurati di avere un modo per ottenere l'ID dell'utente
+
+
       if(this.hostedFieldInstance) {
         this.hostedFieldInstance.tokenize().then(payload => {
           this.nonce = payload.nonce;
 
-          // Invia il nonce e l'importo al server usando axios
-          axios.post('http://localhost:8000/api/payment/process', {
+          const orderData = {
             paymentMethodNonce: this.nonce,
-            amount: this.cartTotal
-          })
+            totalAmount: this.cartTotal, // Modificato per corrispondere al back-end
+            restaurantId: localStorage.getItem('currentRestaurantId'),
+            dishes: this.cart.map(item => ({
+              dish_id: item.id,
+              quantity: item.quantity
+            }))
+          };
+          
+          console.log(orderData);
+          // Invia il nonce e l'importo al server usando axios
+          axios.post('http://localhost:8000/api/payment/process', orderData)
           .then(response => {
             const result = response.data;
             if (result.success) {
@@ -81,11 +105,14 @@ export default {
           })
           .catch(err => {
             console.error('Error in the payment process:', err);
+            this.error = err.message;
+            this.isLoading = false;  // Ferma caricamento
           });
         })
         .catch(err => {
           console.error(err);
           this.error = err.message;
+          this.isLoading = false;  // Ferma caricamento
         });
       }
     }
@@ -199,7 +226,6 @@ export default {
   </button>
 </form>
 
-
 </template>
 
 <style scoped>
@@ -288,5 +314,12 @@ div.ordine{
     height: 40px;
     padding-right: 1.2rem;
   }
-  </style>
+
+  .loading-spinner {
+  text-align: center;
+  font-size: 18px;
+  margin-top: 20px;
+  color: blue;
+}
+</style>
 

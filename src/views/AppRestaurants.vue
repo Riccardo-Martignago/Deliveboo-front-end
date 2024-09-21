@@ -12,8 +12,8 @@ export default {
   },
   computed: {
     filteredRestaurants() {
-  if (this.selectedTypologies.length === 0) {
-    return this.restaurantsWithTypology;
+      if (this.selectedTypologies.length === 0) {
+      return this.restaurantsWithTypology;
   }
   return this.restaurantsWithTypology.filter((restaurant) =>
     this.selectedTypologies.every((typologyId) =>
@@ -57,6 +57,7 @@ export default {
     .catch((error) => {
       console.log(error);
     });
+    window.dispatchEvent(new Event('cart-updated'));
   },
         getImageUrl(photoPath) {
           
@@ -81,7 +82,7 @@ export default {
           adress: restaurant.adress
         });
 
-        window.location.href = 'dish';
+        this.$router.push({ name: 'dish' });
       },
       },
       created(){
