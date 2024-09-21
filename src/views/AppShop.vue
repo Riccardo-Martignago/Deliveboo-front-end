@@ -9,6 +9,10 @@ export default {
       hostedFieldInstance: false,
       nonce: "",
       error: "",
+      email: "",
+      phone: "",
+      adress: "",
+      date: "",
       isLoading: false,
     };
   },
@@ -83,7 +87,12 @@ export default {
 
           const orderData = {
             paymentMethodNonce: this.nonce,
-            totalAmount: this.cartTotal, // Modificato per corrispondere al back-end
+            user_id: userId,
+            email: this.email,
+            phone: this.phone,
+            adress: this.adress,
+            date: this.date,
+            total_price: this.cartTotal,
             restaurantId: localStorage.getItem('currentRestaurantId'),
             dishes: this.cart.map(item => ({
               dish_id: item.id,
@@ -197,7 +206,25 @@ export default {
       </div>
     </div>
   
-    <form class="payment-form">
+    
+
+  <form class="payment-form">
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" v-model="email" class="form-control" id="email" required />
+    </div>
+    <div class="form-group">
+      <label for="phone">Phone</label>
+      <input type="text" v-model="phone" class="form-control" id="phone" required />
+    </div>
+    <div class="form-group">
+      <label for="adress">Address</label>
+      <input type="text" v-model="adress" class="form-control" id="adress" required />
+    </div>
+    <div class="form-group">
+      <label for="date">Order Date</label>
+      <input type="date" v-model="date" class="form-control" id="date" required />
+    </div>
   <div v-if="nonce" class="alert alert-success">
     Successfully generated nonce.
   </div>
