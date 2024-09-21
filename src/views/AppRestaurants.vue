@@ -114,7 +114,7 @@ export default {
       </div>
     </div>
 
-    <div class="row">
+    <div class="row mt-5">
       <div class="col-sm-12 d-flex flex-wrap justify-content-center">
         <div class="card col-sm-2 p-1 m-3 border" @click="selectRestaurant(restaurant)" v-for="restaurant in filteredRestaurants" :key="`${restaurant.id}-${restaurant.typologyId}`">
           <img v-if="!restaurant.photo.includes('uploads/')" :src="getImageUrl(restaurant.photo)" alt="Restaurant Photo" class="card-img-top"/>
@@ -125,7 +125,7 @@ export default {
           <div>
             <span class="fs">Typologies:</span>
             <p class="typology" v-for="typology in restaurant.typologyName">
-                <span>{{ typology }}</span>
+              <span>{{ typology }}</span>
             </p>
           </div>
           <p>
@@ -137,103 +137,185 @@ export default {
   </main>
 </template>
 
+<style scoped>
+.dropdown {
+  display: inline-block;
+  width: 100%;
+  max-width: 800px;
+  padding: 25px;
+  margin-top: 130px;
 
-<style>
+  .dropdown-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 1rem 2rem;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
 
-  .dropdown {
-    display: inline-block;
-    width: 800px;
-    padding: 25px;
-    margin-top: 130px;
+    .dropdown-title {
+      font-size: 25px;
+      font-weight: bold;
+    }
 
-    .dropdown-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-      padding: 1rem 2rem;
-      background-color: white;
+    .arrow-down::before {
+      content: "▼";
+      font-size: 20px;
+      color: #00bfa6;
+    }
 
-        .dropdown-title{
-          font-size: 25px;
-          font-weight: bold;
-        }
-
-        .arrow-down::before {
-          content: "▼";
-          font-size: 20px;
-          color: #00bfa6;
-        }
-      
-        .arrow-up::before {
-          content: "▲";
-          font-size: 20px;
-          color: #00bfa6;
-        }
+    .arrow-up::before {
+      content: "▲";
+      font-size: 20px;
+      color: #00bfa6;
     }
   }
-
-
 
   .dropdown-content {
     display: none;
     background-color: white;
-    padding: 10px;
+    padding: 15px;
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
 
-      .dropdown-label {
-        display: flex;
-        align-items: center;
-        margin-bottom: 10px;
-        font-size: 20px;
-      }
-    
-      .dropdown-label input {
-        margin-right: 10px;
-        transform: scale(1.3);
-      }
+    .dropdown-label {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 20px;
+    }
+
+    .dropdown-label input {
+      margin-right: 10px;
+      transform: scale(1.3);
+    }
   }
 
-  .dropdown.active .dropdown-content {
+  &.active .dropdown-content {
     display: block;
   }
+}
 
+.card {
+  width: 100%;
+  max-width: 280px;
+  margin: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+  cursor: pointer;
 
-  div.card{
+  &:hover {
+    transform: translateY(-5px);
+  }
 
-    img{
-      width: 100%;
-      height: 200px;
-      margin: 0 auto;
-      }
+  .card-img-top {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 5px;
+  }
 
-    p.typology{
-      font-size: 16px;
-      font-weight: bold;
-      }
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 1rem;
+    text-transform: capitalize;
+    text-align: center;
+  }
 
-    h3{
-      text-transform: capitalize;
-      font-size: 20px;
-      font-weight: revert;
-      padding-top: 1rem;
+  .typology {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0;
+    padding: 0.2rem 0;
+    text-align: center;
+  }
+
+  p {
+    font-size: 16px;
+    margin: 0.5rem 0;
+    text-align: center;
+
+    span {
+      font-weight: 600;
+      padding-right: 0.5rem;
     }
-    
-    p{
-      font-size: 16px;
-      font-weight: revert;
-      padding: 0;
-      margin: 0;
-      
-        span{
-          font-weight: 600;
-          padding-right: 0.5rem;
-        }
+  }
 
-    span.fs{
-      font-size: 16px;
+  span.fs {
+    font-size: 16px;
+  }
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+  .dropdown {
+    width: 100%;
+    padding: 15px;
+    .dropdown-header {
+      padding: 0.8rem 1.5rem;
+      .dropdown-title {
+        font-size: 20px;
+      }
+    }
+
+    .dropdown-content .dropdown-label {
+      font-size: 18px;
+    }
+  }
+
+  .card {
+    max-width: 220px;
+    .card-img-top {
+      height: 180px;
+    }
+
+    h3 {
+      font-size: 18px;
+    }
+
+    p {
+      font-size: 14px;
     }
   }
 }
 
+@media (max-width: 576px) {
+  .dropdown {
+    width: 100%;
+    padding: 10px;
+
+    .dropdown-header {
+      padding: 0.5rem 1rem;
+      .dropdown-title {
+        font-size: 18px;
+      }
+    }
+
+    .dropdown-content .dropdown-label {
+      font-size: 16px;
+    }
+  }
+
+  .card {
+    max-width: 200px;
+    .card-img-top {
+      height: 160px;
+    }
+
+    h3 {
+      font-size: 16px;
+    }
+
+    p {
+      font-size: 12px;
+    }
+  }
+}
 </style>
 
