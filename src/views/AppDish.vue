@@ -234,9 +234,6 @@ import axios from 'axios';
 </template>
 
 <style scoped>
-.ristorante {
-    padding-top: 180px;
-<style>
 
 .ristorante{
     padding-top: 150px;
