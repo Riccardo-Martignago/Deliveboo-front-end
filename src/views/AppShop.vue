@@ -9,6 +9,7 @@ export default {
       hostedFieldInstance: false,
       nonce: "",
       error: "",
+      isLoading: false,
     };
   },
   methods: {
@@ -17,6 +18,7 @@ export default {
       if (savedCart) {
         this.cart = JSON.parse(savedCart);
       }
+      window.dispatchEvent(new Event('cart-updated'));
     },
 
     calculateCartTotal() {
@@ -28,26 +30,70 @@ export default {
     simulatePayment() {
       alert(`Payment completed for a total of € ${this.cartTotal}`);
       this.clearCart();
+      window.dispatchEvent(new Event('cart-updated'));
     },
 
     clearCart() {
-      this.cart = [];
-      localStorage.removeItem('cart');
+      if (confirm("Are you sure you want to clear the cart?")) {
+        this.cart = [];
+        localStorage.removeItem('cart');
+        this.calculateCartTotal();
+        localStorage.removeItem('currentRestaurantId');
+        window.dispatchEvent(new Event('cart-updated'));
+      }
+    },
+
+    updateItemQuantity(itemId, increment) {
+      const item = this.cart.find(item => item.id === itemId);
+      if (item) {
+        item.quantity += increment;
+        if (item.quantity <= 0) {
+          this.removeItemFromCart(itemId);
+        } else {
+          localStorage.setItem('cart', JSON.stringify(this.cart));
+          this.calculateCartTotal();
+          this.$emit('cartUpdated', this.cart);  // Emissione evento
+        }
+      }
+      window.dispatchEvent(new Event('cart-updated'));
+    },
+
+    removeItemFromCart(itemId) {
+      this.cart = this.cart.filter(item => item.id !== itemId);
+      localStorage.setItem('cart', JSON.stringify(this.cart));
       this.calculateCartTotal();
-      localStorage.removeItem('currentRestaurantId');
+      this.$emit('cartUpdated', this.cart);  // Emissione evento
+      window.dispatchEvent(new Event('cart-updated'));
     },
 
     // Metodo per mandare i dati della carta a Braintree
     payWithCreditCard() {
+      if (this.cartTotal === 0) {
+        alert("Your cart is empty.");
+        return;
+      }
+
+      // Assicurati che i dati necessari siano presenti
+      const userId = localStorage.getItem('userId'); // Assicurati di avere un modo per ottenere l'ID dell'utente
+
+
       if(this.hostedFieldInstance) {
         this.hostedFieldInstance.tokenize().then(payload => {
           this.nonce = payload.nonce;
 
-          // Invia il nonce e l'importo al server usando axios
-          axios.post('http://localhost:8000/api/payment/process', {
+          const orderData = {
             paymentMethodNonce: this.nonce,
-            amount: this.cartTotal
-          })
+            totalAmount: this.cartTotal, // Modificato per corrispondere al back-end
+            restaurantId: localStorage.getItem('currentRestaurantId'),
+            dishes: this.cart.map(item => ({
+              dish_id: item.id,
+              quantity: item.quantity
+            }))
+          };
+          
+          console.log(orderData);
+          // Invia il nonce e l'importo al server usando axios
+          axios.post('http://localhost:8000/api/payment/process', orderData)
           .then(response => {
             const result = response.data;
             if (result.success) {
@@ -59,15 +105,17 @@ export default {
           })
           .catch(err => {
             console.error('Error in the payment process:', err);
+            this.error = err.message;
+            this.isLoading = false;  // Ferma caricamento
           });
         })
         .catch(err => {
           console.error(err);
           this.error = err.message;
+          this.isLoading = false;  // Ferma caricamento
         });
       }
     }
-
   },
   created() {
     this.loadCartFromLocalStorage();
@@ -116,53 +164,162 @@ export default {
 }
 </script>
 <template>
-  <div>
-    <h1>Purchase Summary</h1>
-    <ul>
-      <li v-for="item in cart" :key="item.id">
-        {{ item.name }} - Amount: {{ item.quantity }} - Price: €
-        {{ item.price * item.quantity }}
-      </li>
-    </ul>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
 
-    <h3>Total: € {{ cartTotal }}</h3>
+  <h1>Your order</h1>
+  
+  <div class="border ps-5 pe-5 ordine">
+      <div v-for="item in cart" :key="item.id">
+        <div class="num-piatti border-bottom  d-flex justify-content-between">
+          <p>
+            {{ item.quantity }}x 
+            <span class="nomepiatto">
+              - {{ item.name }} 
+              <button  @click="updateItemQuantity(item.id, -1)"><i class="fa-solid fa-minus"></i></button>
+              <button  @click="updateItemQuantity(item.id, 1)"><i class="fa-solid fa-plus"></i></button>
+            </span> 
+          </p>
+          <p>
+            € {{ item.price * item.quantity }}          
+            <button class="border border-secondary delete ms-5" @click="removeItemFromCart(item.id)"><i class="fa-regular fa-trash-can "></i></button>
+          </p>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between mt-5">
+        <p class="nomepiatto">Order Total</p>
+        <p>€ {{ cartTotal }}</p>
+      </div>
+      <div class="d-flex mb-5 justify-content-end">
+        <button class="btn btn-primary pagamento" @click="simulatePayment">
+          Proceed to payment
+        </button>
+      </div>
+    </div>
+  
+    <form class="payment-form">
+  <div v-if="nonce" class="alert alert-success">
+    Successfully generated nonce.
+  </div>
+  <div v-else-if="error" class="alert alert-danger">
+    {{ error }}
+  </div>
 
-    <button class="btn btn-primary" @click="simulatePayment">
-      Proceed to payment
-    </button>
+  <div class="form-group d-flex">
+    <label for="creditCardNumber">Credit Card Number</label>
+    <div id="creditCardNumber" class="form-control input-field"></div>
   </div>
   
-  <form>
-    <div class="alert alert-success" v-if="nonce">
-      Successfully generated nonce.
+  <div class="form-group row ">
+    <div class="col-6 d-flex">
+      <label for="expireDate">Expire Date</label>
+      <div id="expireDate" class="form-control input-field"></div>
     </div>
-    <div class="alert alert-danger" v-else-if="error">
-      {{ error }}
+    <div class="col-6 d-flex">
+      <label for="cvv">CVV</label>
+      <div id="cvv" class="form-control input-field"></div>
     </div>
-      <hr />
-    <div class="form-group">
-        <label>Credit Card Number</label>
-        <div id="creditCardNumber" class="form-control"></div>
-    </div>
-    <div class="form-group">
-        <div class="row">
-            <div class="col-6">
-                <label>Expire Date</label>
-                <div id="expireDate" class="form-control"></div>
-            </div>
-            <div class="col-6">
-                <label>CVV</label>
-                <div id="cvv" class="form-control"></div>
-            </div>
-        </div>
-    </div>
-    <button class="btn btn-primary btn-block" @click.prevent="payWithCreditCard">Pay with Credit Card</button>
+  </div>
+  
+  <button class="btn btn-primary btn-block pay-btn" @click.prevent="payWithCreditCard">
+    Pay with Credit Card
+  </button>
 </form>
+
 </template>
 
 <style scoped>
-  div{
-    padding-top: 150px;
+
+h1{
+  font-weight: bold;
+  font-size: 30px;
+  text-align: center;
+  padding-top: 180px;
+  color: rgb(134, 181, 222);
+}
+div.ordine{
+  width: 40%;
+  margin: 0 auto;
+
+    p{
+          font-size: 22px;
+    }   
+
+
+    div{
+      border: 1;
+      border-color: black;
+    }
+
+  button.delete{
+    background-color: white;
+    font-size: 20px;
+
   }
+
+  button:hover{
+    color:rgb(134, 181, 222);
+  }
+
+  
+      .nomepiatto{
+        font-weight: 500;
+      }
+      
+      
+      button{
+        padding: 0.2rem 0.5rem;
+      margin-top: 0.8rem;
+      background-color: white;
+      border: 0;
+    }
+
+    button.pagamento{
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      background-color: rgb(134, 181, 222);
+      color: black;
+    }
+
+    button.pagamento:hover{
+      background-color: rgb(178, 208, 234);
+      color: black;
+    }
+  }
+
+  form{
+
+    width: 40%;
+    margin: 0 auto;
+    margin-top: 6rem;
+  }
+  .form-group{
+    margin-bottom: 2rem;
+  }
+
+  label{
+    width: 40%;
+  }
+
+ div> #expireDate, #cvv {
+    height: 40px;
+    padding-right: 1.2rem;
+  }
+
+  label#cvv{
+    text-align: end;
+  }
+
+  div>#creditCardNumber{
+    height: 40px;
+    padding-right: 1.2rem;
+  }
+
+  .loading-spinner {
+  text-align: center;
+  font-size: 18px;
+  margin-top: 20px;
+  color: blue;
+}
 </style>
 
