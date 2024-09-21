@@ -172,7 +172,7 @@ import axios from 'axios';
             </p>
             <p>
                 <span>
-                    Partita Iva:
+                    VAT:
                 </span>
                 {{ restaurantInfo.piva }}
             </p>
