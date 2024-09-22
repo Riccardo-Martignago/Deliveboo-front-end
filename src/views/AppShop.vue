@@ -196,11 +196,6 @@ export default {
       <p class="nomepiatto">Order Total</p>
       <p>€ {{ cartTotal }}</p>
     </div>
-    <div class="d-flex mb-5 justify-content-end">
-      <button class="btn btn-primary pagamento" @click="simulatePayment">
-        Proceed to payment
-      </button>
-    </div>
   </div>
 
   <form class="payment-form">
