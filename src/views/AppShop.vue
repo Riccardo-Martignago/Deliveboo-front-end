@@ -9,7 +9,10 @@ export default {
       hostedFieldInstance: false,
       nonce: "",
       error: "",
-      isLoading: false,
+      isLoading: false, 
+      email: '',
+      phone: '',
+      address: '',
     };
   },
   methods: {
@@ -27,11 +30,11 @@ export default {
       }, 0);
     },
 
-    simulatePayment() {
-      alert(`Payment completed for a total of € ${this.cartTotal}`);
-      this.clearCart();
-      window.dispatchEvent(new Event('cart-updated'));
-    },
+    // simulatePayment() {
+    //   alert(`Payment completed for a total of € ${this.cartTotal}`);
+    //   this.clearCart();
+    //   window.dispatchEvent(new Event('cart-updated'));
+    // },
 
     clearCart() {
       if (confirm("Are you sure you want to clear the cart?")) {
@@ -67,33 +70,33 @@ export default {
     },
 
     // Metodo per mandare i dati della carta a Braintree
-    payWithCreditCard() {
-      if (this.cartTotal === 0) {
-        alert("Your cart is empty.");
-        return;
-      }
+      payWithCreditCard() {
+    if (this.cartTotal === 0) {
+      alert("Your cart is empty.");
+      return;
+    }
 
-      // Assicurati che i dati necessari siano presenti
-      const userId = localStorage.getItem('userId'); // Assicurati di avere un modo per ottenere l'ID dell'utente
+    if (this.hostedFieldInstance) {
+      this.hostedFieldInstance.tokenize().then(payload => {
+        this.nonce = payload.nonce;
 
+        const orderData = {
+          paymentMethodNonce: this.nonce,
+          totalAmount: this.cartTotal,
+          email: this.email,
+          phone: this.phone,
+          address: this.address,
+          restaurantId: localStorage.getItem('currentRestaurantId'),
+          dishes: this.cart.map(item => ({
+            dish_id: item.id,
+            quantity: item.quantity
+          }))
+        };
+        
+        console.log('Dati inviati per il pagamento:', orderData);
 
-      if(this.hostedFieldInstance) {
-        this.hostedFieldInstance.tokenize().then(payload => {
-          this.nonce = payload.nonce;
-
-          const orderData = {
-            paymentMethodNonce: this.nonce,
-            totalAmount: this.cartTotal, // Modificato per corrispondere al back-end
-            restaurantId: localStorage.getItem('currentRestaurantId'),
-            dishes: this.cart.map(item => ({
-              dish_id: item.id,
-              quantity: item.quantity
-            }))
-          };
-          
-          console.log(orderData);
-          // Invia il nonce e l'importo al server usando axios
-          axios.post('http://localhost:8000/api/payment/process', orderData)
+        // Invia il nonce e i dettagli del pagamento al server
+        axios.post('http://localhost:8000/api/payment/process', orderData)
           .then(response => {
             const result = response.data;
             if (result.success) {
@@ -104,18 +107,18 @@ export default {
             }
           })
           .catch(err => {
-            console.error('Error in the payment process:', err);
+            console.error('Errore nel processo di pagamento:', err);
             this.error = err.message;
             this.isLoading = false;  // Ferma caricamento
           });
-        })
-        .catch(err => {
-          console.error(err);
-          this.error = err.message;
-          this.isLoading = false;  // Ferma caricamento
-        });
-      }
+      })
+      .catch(err => {
+        console.error('Errore nella tokenizzazione della carta:', err);
+        this.error = err.message;
+        this.isLoading = false;  // Ferma caricamento
+      });
     }
+  }
   },
   created() {
     this.loadCartFromLocalStorage();
@@ -190,41 +193,53 @@ export default {
         <p class="nomepiatto">Order Total</p>
         <p>€ {{ cartTotal }}</p>
       </div>
-      <div class="d-flex mb-5 justify-content-end">
+      <!-- <div class="d-flex mb-5 justify-content-end">
         <button class="btn btn-primary pagamento" @click="simulatePayment">
           Proceed to payment
         </button>
+      </div> -->
+    </div>
+  
+    <form class="mt-5" @submit.prevent="payWithCreditCard">
+      <h2>Information</h2>
+      
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input v-model="email" type="email" id="email" class="form-control" required>
       </div>
-    </div>
-  
-    <form class="payment-form">
-  <div v-if="nonce" class="alert alert-success">
-    Successfully generated nonce.
-  </div>
-  <div v-else-if="error" class="alert alert-danger">
-    {{ error }}
-  </div>
 
-  <div class="form-group d-flex">
-    <label for="creditCardNumber">Credit Card Number</label>
-    <div id="creditCardNumber" class="form-control input-field"></div>
-  </div>
-  
-  <div class="form-group row ">
-    <div class="col-6 d-flex">
-      <label for="expireDate">Expire Date</label>
-      <div id="expireDate" class="form-control input-field"></div>
-    </div>
-    <div class="col-6 d-flex">
-      <label for="cvv">CVV</label>
-      <div id="cvv" class="form-control input-field"></div>
-    </div>
-  </div>
-  
-  <button class="btn btn-primary btn-block pay-btn" @click.prevent="payWithCreditCard">
-    Pay with Credit Card
-  </button>
-</form>
+      <div class="form-group">
+        <label for="phone">Phone:</label>
+        <input v-model="phone" type="text" id="phone" class="form-control" required>
+      </div>
+
+      <div class="form-group">
+        <label for="address">Address:</label>
+        <input v-model="address" type="text" id="address" class="form-control" required>
+      </div>
+
+
+      <!-- Campi per la carta di credito -->
+      <div class="form-group d-flex">
+        <label for="creditCardNumber">Credit Card Number</label>
+        <div id="creditCardNumber" class="form-control input-field"></div>
+      </div>
+      
+      <div class="form-group row ">
+        <div class="col-6 d-flex">
+          <label for="expireDate">Expire Date</label>
+          <div id="expireDate" class="form-control input-field"></div>
+        </div>
+        <div class="col-6 d-flex">
+          <label for="cvv">CVV</label>
+          <div id="cvv" class="form-control input-field"></div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary">
+        Pay with Credit Card
+      </button>
+    </form>
 
 </template>
 
