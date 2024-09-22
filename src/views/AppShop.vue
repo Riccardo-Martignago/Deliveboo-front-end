@@ -69,6 +69,9 @@ export default {
       this.$emit('cartUpdated', this.cart);  // Emissione evento
       window.dispatchEvent(new Event('cart-updated'));
     },
+    roundPrice(price) {
+    return Math.round(price * 100) / 100;
+    },
 
     // Metodo per mandare i dati della carta a Braintree
     payWithCreditCard() {
@@ -194,7 +197,7 @@ export default {
     </div>
     <div class="d-flex justify-content-between mt-5">
       <p class="nomepiatto">Order Total</p>
-      <p>€ {{ cartTotal }}</p>
+      <p>€ {{ roundPrice(cartTotal) }}</p>
     </div>
   </div>
 
