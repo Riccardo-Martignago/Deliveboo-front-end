@@ -89,6 +89,7 @@ import axios from 'axios';
                 this.showModal = false;  
                 this.saveCartToLocalStorage();
                 this.calculateCartTotal();
+                window.dispatchEvent(new Event('cart-updated'));
             },
             saveCartToLocalStorage() {
                 console.log("Cart: ", this.cart);
@@ -172,7 +173,7 @@ import axios from 'axios';
             </p>
             <p>
                 <span>
-                    Partita Iva:
+                    VAT:
                 </span>
                 {{ restaurantInfo.piva }}
             </p>
@@ -183,10 +184,10 @@ import axios from 'axios';
         <div class="center">
             <h1 class="title">Restaurant menu</h1>    
         </div>
-        <div class="col-sm-10 d-flex flex-wrap justify-content-center zeroauto ">
-            <div class="card col-sm-3 p-1 m-3 border d-flex align-items-start border border-secondary" v-for="(dish) in dishes" :key="dish.id">
+        <div class="col-sm-12 d-flex  justify-content-center flex-wrap zeroauto">
+            <div class="card col-sm-3 p-1 m-3 border d-flex  align-items-start border border-secondary" v-for="(dish) in dishes" :key="dish.id">
                 <img :src="getImageUrl(dish.photo)" alt="Dish Photo" class="col-sm-3 mb-3 card-img-top"/>
-                <div class="col-sm-12 mb-3 d-flex flex-column ">
+                <div class="col-sm-12 mb-3 d-flex flex-column">
                     <h3 class="card-title">{{ dish.name }}</h3>
                     <p>
                         <span>Description:</span> {{ dish.description }}
@@ -195,7 +196,7 @@ import axios from 'axios';
                         € {{ dish.price }}
                     </p>
                     <div class="carrello p-0 pt-5">
-                        <form class="d-flex justify-content-start align-items-center">
+                        <form class=" d-flex justify-content-center align-items-center">
                             <button type="button" class="btn border border-secondary" @click="decreaseQuantity(dish.id)">
                                 -
                             </button>
@@ -211,7 +212,7 @@ import axios from 'axios';
                                 placeholder="0"
                             />
                             
-                            <button type="button" class="btn border border-secondary me-5" @click="increaseQuantity(dish.id)">
+                            <button type="button" class="btn border border-secondary" @click="increaseQuantity(dish.id)">
                                 +
                             </button>
 
@@ -234,7 +235,7 @@ import axios from 'axios';
     </div>
 </template>
 
-<style>
+<style scoped>
 
 
 
@@ -242,83 +243,73 @@ import axios from 'axios';
     padding-top: 150px;
     margin-left: 14rem;
 
-    img{
+    img {
         width: 350px;
         border-radius: 50%;
     }
 
-    .info{
-
-        h1{
+    .info {
+        h1 {
             text-transform: capitalize;
             font-weight: bold;
-            font-size: 40px;
-
-        }
-        
-        p{
-            font-size: 18px;
-
-            span{
-                font-weight: bold;
-                font-size: 20px;
-                padding-right: 1rem;
-            }
-        }
-
-
-    }
-
-}
-
-.center{
-    text-align: center;
-
-    .title{
-        font-size: 30px;
-        font-weight: bold;
-        padding-top: 3rem;
-        
-    }
-}
-
-div.zeroauto{
-    margin: 0 auto;
-    font-size: 20px;
-}
-
- div.card{
-
-    img{
-        width: 300px;
-        height: 200px;
-        margin-top: 1rem;
-    }
-    div{
-        padding-left: 2.3rem;
-
-        h3{
             font-size: 30px;
         }
 
+        p {
+            font-size: 18px;
+
+            span {
+                font-weight: bold;
+                font-size: 16px;
+                padding-right: 1rem;
+            }
+        }
     }
-    div>p>span{
+}
+
+.center {
+    text-align: center;
+
+    .title {
+        font-size: 30px;
         font-weight: bold;
-        font-size: 18px;
+        padding-top: 3rem;
+    }
+}
 
+div.zeroauto {
+    margin: 0 auto;
+    font-size: 16px;
+}
+
+div.card {
+    img {
+        width: 300px;
+        height: 200px;
+        margin: 0 auto;
     }
 
-    .price{
-        font-size:xx-large;
+    div {
+        padding-left: 2.3rem;
+
+        h3 {
+            font-size: 25px;
+        }
+    }
+
+    div>p>span {
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .price {
+        font-size: xx-large;
         margin-top: 1.5rem;
-
     }
- }
+}
 
- div.carrello{
-
-    form{
-
+div.carrello {
+    form {
         input[type="number"]::-webkit-outer-spin-button,
         input[type="number"]::-webkit-inner-spin-button {
             -webkit-appearance: none;
@@ -327,29 +318,144 @@ div.zeroauto{
 
         input[type="number"] {
             -moz-appearance: textfield;
-  }
+        }
     }
-    button.cart{
+
+    button.cart {
         font-size: 16px;
         font-weight: bold;
         background-color: aquamarine;
+        margin-left: 1rem;
     }
-    }
-    .modal-backdrop {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background-color: rgba(0, 0, 0, 0.5);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-    .modal-content {
-        background-color: white;
-        padding: 20px;
-        border-radius: 10px;
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+@media (max-width: 1024px) {
+    .ristorante {
+        margin-left: 0;
+        padding-top: 100px;
         text-align: center;
+        margin-top: 100px;
+
+        img {
+            width: 250px;
+            margin-bottom: 20px;
+        }
+
+        .info {
+            h1 {
+                font-size: 32px;
+            }
+
+            p {
+                font-size: 16px;
+
+                span {
+                    font-size: 18px;
+                }
+            }
+        }
     }
+
+    div.card {
+        width: 40%;
+        img {
+            width: -moz-available;
+            height: 250px;
+        }
+
+        div {
+            padding-left: 0;
+            text-align: center;
+
+            h3 {
+                font-size: 24px;
+            }
+        }
+
+        .price {
+            font-size: large;
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .ristorante {
+        margin-left: 0;
+        padding-top: 80px;
+        margin-top: 100px;
+
+        img {
+            width: 200px;
+            margin-bottom: 15px;
+        }
+
+        .info {
+            h1 {
+                font-size: 28px;
+            }
+
+            p {
+                font-size: 14px;
+
+                span {
+                    font-size: 16px;
+                }
+            }
+        }
+    }
+
+    div.card {
+        width: 60%;
+        margin-bottom: 20px;
+
+        img {
+            width: fit-content;
+            height: auto;
+        }
+
+        div {
+            padding-left: 0;
+            text-align: center;
+
+            h3 {
+                font-size: 20px;
+            }
+        }
+
+        .price {
+            font-size: medium;
+        }
+    }
+
+    div.carrello {
+        form {
+            justify-content: center;
+
+            button.cart {
+                font-size: 14px;
+                margin-top: 0;
+                margin-left: 1rem;
+            }
+        }
+    }
+}
 </style>

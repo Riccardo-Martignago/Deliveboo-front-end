@@ -3,27 +3,27 @@ export default {
     data() {
         return {
             menuItems: [
-                "Investors",
-                "About us",
-                "Restaurants",
-                "Other",
+                "Investitori",
+                "Chi siamo",
+                "Ristoranti",
+                "Altro",
                 "Pressroom",
-                "Programming",
+                "Programmazione",
                 "Design",
-                "Work with us",
-                "Become our partner"
+                "Lavora con noi",
+                "Diventa nostro partner"
             ],
             legalItems: [
-                "Terms & Conditions",
-                "Privacy Policy",
+                "Termini & Condizioni",
+                "Informativa sulla privacy",
                 "Cookies",
-                "Partner Rating",
-                "Requests from Public Authorities"
+                "Classificazione dei partner",
+                "Richieste da parte delle Autorità Pubbliche"
             ],
             infoItems: [
-                "Contacts",
+                "Contatti",
                 "FAQ",
-                "Types of Cuisine"
+                "Tipi di cucina"
             ]
         };
     }
@@ -32,8 +32,8 @@ export default {
 
 
 <template>
-    <footer class="d-flex justify-content-center">
-        <div class="menu">
+    <footer class="d-flex justify-content-center flex-wrap">
+        <div class="menu section">
             <h1>
                 Discover Deliveboo
             </h1>
@@ -43,7 +43,7 @@ export default {
                 </li>
             </ul>
         </div>
-        <div class="lega">
+        <div class="lega section">
             <h1>
                 Legal notes
             </h1>
@@ -53,7 +53,7 @@ export default {
                 </li>
             </ul>
         </div>
-        <div class="info">
+        <div class="info section">
             <h1>
                 Help
             </h1>
@@ -66,44 +66,62 @@ export default {
     </footer>
 </template>
 
+
 <style lang="scss">
-    footer{
+    footer {
         background-color: #2e3333;
         color: white;
-        padding: 5rem 0rem;
+        padding: 5rem 0;
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
 
-        div{
+        .section {
             margin: 2rem;
-            width: 25%;
+            width: 100%; 
             background-color: #434848;
 
-            h1{
+            h1 {
                 padding-left: 2rem;
                 padding-top: 2rem;
+                font-size: 1.5rem;
             }
 
-            ul{
+            ul {
                 padding-left: 2rem;
                 padding-top: 0.7rem;
 
-                li{
+                li {
                     padding-top: 0.3rem;
                 }
 
-                li:hover{
+                li:hover {
                     color: rgb(72, 248, 248);
                 }
             }
         }
-        
-        h1{
-            font-size: 30px;
-            font-weight: bold;
-        }
 
-        ul{
+        ul {
             list-style-type: none;
             padding: 0;
+        }
+
+       
+        @media (min-width: 768px) {
+            .section {
+                width: 45%; 
+            }
+        }
+
+        
+        @media (min-width: 1024px) {
+            .section {
+                width: 25%;
+            }
+
+            h1 {
+                font-size: 30px; 
+            }
         }
     }
 
