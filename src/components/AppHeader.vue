@@ -28,7 +28,7 @@ export default{
     },
     methods:{
         goToDashboard(){
-            window.location.href = 'http://127.0.0.1:8000/';
+            window.location.href = 'http://127.0.0.1:8000';
         },
         updateCartItemCount() {
             const cart = JSON.parse(localStorage.getItem('cart')) || [];
